@@ -1,0 +1,43 @@
+<h3>地址管理</h3>
+<h4 id="num"></h4>
+<script src="js/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="css/uploadify.css">
+<style type="text/css">
+body {
+	font: 13px Arial, Helvetica, Sans-serif;
+}
+</style>
+</head>
+	
+
+	<form>
+		<div id="queue"></div>
+		<input id="file_upload" name="file_upload" type="file" multiple="true">
+	</form>
+	<button class="btn btn-danger" onclick="delLocation()">清空</button>
+	<script type="text/javascript">
+		function delLocation(){
+			GJson("index?m=User.delLocation");
+			$("#num").text("数量:"+GJson("index?m=User.getNum").object);
+		}
+		$(function() {
+			$("#num").text("数量:"+GJson("index?m=User.getNum").object);
+			$('#file_upload').uploadify({
+				'formData'     : {
+					
+				},
+				'buttonText':'上传',
+				'swf'      : 'swf/uploadify.swf',
+				'uploader' : 'index?m=Lua.upload',
+				'fileTypeExts':'*.txt;',
+				'onUploadSuccess':function(file, data, response){
+					var o=eval("("+data+")");
+					wlog(o.id);
+					o=GJson("index?m=User.uploadLocation",{id:o.id});
+					if(o.code==200){
+						$("#num").text("数量:"+o.object);
+					}
+				}
+			});
+		});
+	</script>

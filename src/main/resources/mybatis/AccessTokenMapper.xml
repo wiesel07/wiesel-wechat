@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wiesel.wechat.mapper.AccessTokenMapper" >
+	<resultMap id="BaseResultMap" type="wiesel.wechat.entity.AccessToken" >
+		<result column="ACCESS_TOKEN" property="accessToken" jdbcType="VARCHAR" />
+		<result column="EXPIRES_IN" property="expiresIn" jdbcType="INTEGER" />
+		<result column="CREADATE_DATE" property="creadateDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<insert id="insert" parameterType="wiesel.wechat.entity.AccessToken" >
+    insert into WECHAT_ACCESS_TOKEN (ACCESS_TOKEN, EXPIRES_IN, CREADATE_DATE
+      )
+    values (#{accessToken,jdbcType=VARCHAR}, #{expiresIn,jdbcType=INTEGER}, #{creadateDate,jdbcType=TIMESTAMP}
+      )
+	</insert>
+	<select id="selectAll" resultMap="BaseResultMap" >
+    select ACCESS_TOKEN, EXPIRES_IN, CREADATE_DATE
+    from ACCESS_TOKEN
+	</select>
+	
+	
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="wiesel.wechat.entity.AccessToken" >
+    select ACCESS_TOKEN, EXPIRES_IN, CREADATE_DATE
+    from ACCESS_TOKEN WHERE ACCES_TOKEN =#{accessToken}
+	</select>
+	
+	<delete id="deleteByAccessToken" parameterType="wiesel.wechat.entity.AccessToken">
+    delete from WECHAT_ACCESS_TOKEN
+    where ACCESS_TOKEN = #{accessToken}
+  </delete>
+	
+</mapper>

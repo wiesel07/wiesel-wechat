@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/dataTables.bootstrap.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="js/dataTables.bootstrap.js"></script>
+		<script type="text/javascript" src="js/foundation.js"></script>
+		<script type="text/javascript" src="js/user.js"></script>
+		<title>授权管理</title>
+	</head>
+	<style>
+		.xs{
+			display: none;
+		}
+		.jingdu{
+			z-index: 9999;
+			position: absolute;
+			top: 0;
+			height: 8px;
+			left: 0;
+			width: 100%;
+			
+		}
+		#jdt{
+			background: #003399;
+			width: 0;
+			height: 8px;
+		}
+	</style>
+	<body>
+		<div class="jingdu"><div id="jdt" class="jdt"></div></div>
+	   <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" data-backdrop="static" id="modal">
+			<div class="modal-dialog modal-lg" id="dlg-con" >
+				<h3>管理平台</h3>
+			</div>
+		</div>
+		<div class="header">
+			<div class="logo">
+				<h3>用户管理平台</h3>
+			</div>
+			<div class="company">
+				<h5 id="c_name"></h5>
+			</div>
+		</div>
+		<div class="left">
+		    <ul id="" class="company-ul"><li onclick="sousuo(this)"><<<</li>
+			</ul>
+			<ul id="control" class="company-ul">
+			</ul>
+		</div>
+		<div class="content">
+		 	 
+            <div class="xs" name="系统设置" id="setting" js="initsetting()"src="user/setting.html"></div>
+           
+		</div>
+</body>
+
+</html>

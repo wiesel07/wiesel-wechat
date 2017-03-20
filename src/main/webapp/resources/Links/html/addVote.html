@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title></title>
+        
+        
+        <link rel="stylesheet" href="../../jslib/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="../../jslib/bootstrap/css/bootstrap-datetimepicker.min.css" />
+<link rel="stylesheet" href="../../jslib/bootstrap/css/bootstrapValidator.min.css" />
+
+
+
+<script src="../../jslib/jquery/jquery.min.js"></script>
+
+
+<script src="../../jslib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../jslib/bootstrap/js/bootstrapValidator.min.js"></script>
+<script src="../../jslib/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script src="../../jslib/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+        
+    
+        
+
+    </head>
+    <body>
+       <div class="col-xs-12">
+	<br>
+	<!-- 响应式栅格:col-xs-*适于屏幕宽度小于768px *具体用数字表示(2表示占两列,6表示占六列,一行中总共有12列,超过将自动换行), -->
+	<!-- 
+		表单控件的class属性要有 form-control ,label标签用control-label
+	 -->
+		<form id="defaultForm" class="form-horizontal" method="post" >
+			<div class="form-group">
+	            <label class="col-xs-2 control-label">标题</label>
+	            <div class="col-xs-10">
+	                <input type="text" class="form-control" name="voteTitle" placeholder="输入投票主题，2-80字" />
+	            </div>
+	        </div>
+	        <div class="form-group vote-item">
+	            <label class="col-xs-2 control-label">选项1</label>
+	            <div class="col-xs-8">
+	                <input type="text" class="form-control" name="voteItem" placeholder="选项1" />
+	            </div>
+	            <div class="col-xs-2">
+	               <button type="button" class="btn btn-info" onclick="deleteItem(this)" >
+					    删除
+					</button>
+	            </div>
+	        </div>
+	        <div class="form-group vote-item">
+	            <label class="col-xs-2 control-label">选项2</label>
+	            <div class="col-xs-8">
+	                <input type="text" class="form-control" name="voteItem" placeholder="选项2" />
+	            </div>
+	            <div class="col-xs-2">
+	               <button type="button" class="btn btn-info" onclick="deleteItem(this)" >
+					    删除
+					</button>
+	            </div>
+	        </div>
+	        
+	        <div class="form-group add-item">
+	            <label class="col-xs-2 control-label"></label>
+	            <div class="col-xs-4">
+	               <button type="button" class="btn btn-info" onclick="addItem(this)" >
+					    添加选项
+					</button>
+	            </div>
+	        </div>
+	        
+	        <div class="form-group">
+	            <label class="col-xs-2 control-label">投票类型</label>
+	            <div class="col-xs-10">
+					<select class="form-control" name="voteType">
+						<option value="单选">单选</option>
+						<option value="多选，最多2项">多选，最多2项</option>
+						<option value="3">多选，无限制</option>
+					</select>
+			    </div>		
+			</div>
+		   <div class="form-group">
+		           <label class="col-xs-2 control-label">有效天数</label>
+				    <div class="col-xs-10">
+						<select class="form-control" name="validDay">
+							<option value=1>1天</option>
+							<option value=2>2天</option>
+							<option value=3>3天</option>
+						</select>
+				   <input type="hidden" class="form-control" id="fileName" name="fileName" />	               
+	               <input type="hidden" class="form-control" id="filePath" name="filePath" />
+				    </div>		
+            </div>  
+		</form>
+	
+	<form id="defaultForm_1" action="/wiesel-wechat/core/upload" class="form-horizontal" method="post"  enctype="multipart/form-data">
+			<div class="form-group">
+	            <label class="col-xs-2 control-label">图片</label>
+	            <div class="col-xs-5">
+	               <input id="wechatFile" class="form-control" type="file" name="file"/> 
+	            </div>
+	             <label class="col-xs-5 control-label">注:可以上传一张和投票主题相关的图片</label>
+	        </div>
+	  </form>
+	      
+	</div>
+
+    </body>
+        
+
+</html>
+
+<script>
+
+$("#wechatFile").change(function(){
+	doUpload();
+	});
+function doUpload() {  
+	
+    var formData = new FormData($( "#defaultForm_1" )[0]);  
+    $.ajax({  
+         url: '/wiesel-wechat/core/upload' ,  
+         type: 'POST',  
+         data: formData,  
+         async: false,  
+         cache: false,  
+         contentType: false,  
+         processData: false,  
+         success: function (json) {  
+             $("#fileName").val(json.fileName);
+             $("#filePath").val(json.path);
+         },  
+         error: function (json) {  
+        	 $.messager.alert("操作提示","操作失败:"+"请重新上传！","error",function(){});
+         }  
+    });  
+};
+/* $('#datetimepicker').datetimepicker(); */
+function deleteItem(_self){
+	var items = $(".vote-item");
+	if(items.length==1){
+		return;
+	}
+	$(_self).parents(".vote-item").remove();
+};
+
+function addItem(_self){
+	//$($("#defaultForm .vote-item")[1]).text().trim().split('删除')[0].trim()
+	$(_self).parents(".add-item").before(" <div class=\"form-group vote-item\">  <label class=\"col-xs-2 control-label\">选项</label>  <div class=\"col-xs-8\"><input type=\"text\" class=\"form-control\" name=\"voteItem\" placeholder=\"选项\" /> </div> <div class=\"col-xs-2\"><button type=\"button\" class=\"btn btn-info\" onclick=\"deleteItem(this)\" >  删除 </button> </div></div>");
+};
+</script>

@@ -1,0 +1,309 @@
+
+<h2>授权管理</h2>
+<button class="btn btn-danger" onclick="mudelall()">批量删除</button>
+<button class="btn btn-danger" onclick="quanxuan()">全选</button>
+<h6></h6>
+<table class="table table-striped table-bordered " id="tokentable">
+	<thead>
+						<tr>
+							<th>授权码id</th>
+							<th>授权码</th>
+							<th>机器号</th>
+							<th>用户</th>
+							<th>软件</th>
+							<th>状态</th>
+							<th>激活时间</th>
+							<th>生成时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+</table>
+
+<div class="modal-content" id="addtoken" style="display:none;">
+	<div object="token">
+		<div class="modal-header">
+			<h2 id="dlg-title" object="tittle">软件管理</h2>
+		</div>
+		<div class="modal-body">
+			<div class="con">
+				<div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2 col-lg-offset-2">名称</label> <input
+						type="text" object="name" class="w form-control  form-inline w" />
+					<small style="color: #f00;"></small>
+				</div>
+				<div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2 col-lg-offset-2">密码</label> <input
+						type="text" object="pswd" class="w form-control  form-inline w" />
+					<small style="color: #f00;"></small>
+				</div>
+				<input type="hidden" object="id">
+				<div class="modal-footer">
+					<button type="button" onclick="tokenqueren()"
+						class="btn btn-primary">确认</button>
+					<button onclick="hidedlg()" type="button" class="btn btn-default"
+						data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-content" id="tokendetail" style="display:none;">
+	<div object="tokendetail">
+		<div class="modal-header">
+			<h2 id="dlg-title" object="tittle">软件管理</h2>
+		</div>
+		<div class="modal-body">
+			<div class="con">
+				<table class="table table-striped table-bordered " id="">
+					<thead>
+						<tr>
+							<th>授权码id</th>
+							<th >授权码</th>
+							<th >机器号</th>
+							<th>用户</th>
+							<th>软件</th>
+							<th>状态</th>
+							<th>激活时间</th>
+							<th>生成时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="tokennum"></tbody>
+				</table>
+				
+
+				<div class="modal-footer">
+
+					<button onclick="hidedlg()" type="button" class="btn btn-default"
+						data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	//直接运行代码
+	var tokentype;
+	
+	function inittoken(){
+		updatetoken();
+		num_mu=0;
+	}
+	//直接运行代码结束
+	function addtokenpage() {
+		showdlg('#addtoken');
+		setobject({
+			tittle : "添加用户",
+			name : "",
+			pswd : ""
+		}, "token");
+		tokentype = "add";
+	}
+	function changetokennum(th) {
+		var pa = $(th).parent().parent();
+		var oname = $(pa).attr("object");
+		var o = getobject(oname);
+		var ob = GJson(host + "class=AdminAction&function=changetokennums", {
+			id : o.id,
+			zcs:o.zcs
+		});
+		if (ob.codeString == "true") {
+			alert(ob.msg);
+			updatenum(o.uid);
+		}
+		else{
+			alert(ob.msg);
+		}
+	}
+	
+	function changetokenpage(id) {
+		showdlg('#addtoken');
+		var o = GJson(host + "class=tokenAction&function=getOne", {
+			id : id
+		});
+		if (o.codeString == "true") {
+			setobject({
+				tittle : "修改软件",
+				name : o.object.name,
+				tokenlength : o.object.tokenlength,
+				id : o.object.id
+			}, "token");
+			tokentype = "change";
+		}
+
+	}
+	function tokenqueren() {
+		var ob = getobject("token");
+		switch (tokentype) {
+		case "add":
+			var o = GJson(host + "class=AdminAction&function=addtoken", {
+				name : ob.name,
+				pswd : ob.pswd
+			});
+			if (o.codeString == "true") {
+				alert(o.msg);
+
+			} else {
+				alert(o.msg);
+				return;
+			}
+			break;
+		case "change":
+			var o = GJson(host + "class=tokenAction&function=change", {
+				name : ob.name,
+				tokenlength : ob.tokenlength,
+				id : ob.id
+			});
+			if (o.codeString == "true") {
+				alert(o.msg);
+
+			} else {
+				alert(o.msg);
+				return;
+			}
+			break;
+		}//switch结束
+		updatetoken();
+		hidedlg();
+	}
+
+	function updatetoken() {
+		//<th>授权码id</th>
+		//					<th>授权码</th>
+		//					<th>机器号</th>
+		//					<th>用户</th>
+		//					<th>软件</th>
+		//					<th>状态</th>
+		//					<th>激活时间</th>
+		//					<th>生成时间</th>
+		//					<th>操作</th>
+		var c = [ {
+			data : 'id'
+		}, {
+			data : 'token'
+		},  {
+			data : 'machine'
+		}, {
+			data : 'username'
+		}, {
+			data : 'softname'
+		}, {
+			data : 'status'
+		}, {
+			data : 'jhtime'
+		}, {
+			data : 'sctime'
+		}, {
+			data : 'id'
+		} ];
+
+		$('#tokentable').DataTable().destroy();
+
+		$('#tokentable')
+				.DataTable(
+						{
+							"processing" : true,
+							"serverSide" : true,
+							"ajax" : {
+								"url" : host
+										+ "class=AdminAction&function=getTokens",
+								"type" : "POST"
+							},
+							columns : c,
+							"iDisplayLength" : 100,
+							createdRow : function(row, data, index) {
+								//console.log(data.id);
+								var ht = '<button class="btn btn-info" onclick="deltoken('
+										+ data.id
+										+ ')" >删除</button>&nbsp;<button class="btn btn-danger mudel" mu="0" tokenid="'+
+										data.id+'" onclick="mudel(this)" >多选删除</button>&nbsp;<button class="btn btn-info" onclick="huishoutoken('
+										+ data.id
+										+ ')" >回收</button>';
+								$('td', row).eq(8).html(ht);
+								
+								$('td', row).eq(1).html('<div style="word-wrap:break-word;width:250px">'+
+										data.token+'</div>');
+								$('td', row).eq(2).html('<div style="word-wrap:break-word;width:150px">'+
+										data.machine+'</div>');
+								var s="未激活";
+
+								switch(i=data.status){
+								case 0:
+								
+								data.jhtime="未激活";
+								break;
+								case 1:
+								s="已激活";
+								break;
+								case 2:
+								
+								s="已失效";
+								data.jhtime="已失效";
+								break;
+								}
+								$('td', row).eq(5).html(s);
+								$('td', row).eq(6).html(data.jhtime);
+							},
+							language : language
+						});
+
+	}
+	var num_mu=0;
+	function mudel(th){
+	var mu=$(th).attr("mu");
+	if(mu=="0"){
+	$(th).attr("mu","1");
+	$(th).text("已选择");
+	num_mu++;
+	if(num_mu>0){
+	
+	}
+	}else{
+	$(th).attr("mu","0");
+	$(th).text("多选删除");
+	num_mu--;
+	if(num_mu<1){
+	
+	}
+	}
+	}
+	function huishoutoken(id){
+		if(!confirm("确认回收")){
+		return;
+		}
+		ob=GJson("/token/index?method=index&class=AdminAction&function=huishouToken",{id:id});
+		alert(ob.msg);
+		updatetoken();
+	}
+	function quanxuan(){
+		$(".mudel").attr("mu","1");
+		$(".mudel").text("已选择");
+	}
+	function mudelall(){
+		if(!confirm("确认删除?")){
+		return;
+		}
+		var list=$(".mudel");
+		var i=0;
+		for(var j=0;j<list.length;j++){
+		if($(list[j]).attr("mu")=="1"){
+		//console.log($(list[j]).attr("tokenid"));
+		var ob=GJson("/token/index?method=index&class=AdminAction&function=delToken",
+		{id:$(list[j]).attr("tokenid")});
+		if(ob.codeString=="true"){
+		i++;
+		}
+		}
+		}
+		alert("成功删除"+i+"个");
+		updatetoken();
+		}
+	function deltoken(id){
+		if(!confirm("确认删除")){
+		return;
+		}
+		ob=GJson("/token/index?method=index&class=AdminAction&function=delToken",{id:id});
+		alert(ob.msg);
+		updatetoken();
+	}
+</script>

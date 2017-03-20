@@ -1,0 +1,193 @@
+<h2>软件管理</h2>
+<button class="btn btn-info" onclick="addsoftpage()" >
+    添加
+</button>
+<h6></h6>
+<table class="table table-striped table-bordered " id="softwavetable">
+    <thead>
+        <tr>
+            <th>软件id</<th><th>软件名称</<th><th>序列号长度</<th>
+            <th>时长</<th><th>操作</<th>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal-content" id="addsoftwave" style="display:none;">
+    <div object="softwave">
+    <div class="modal-header">
+        <h2 id="dlg-title" object="tittle">软件管理</h2>
+    </div>
+    <div class="modal-body">
+        <div class="con">
+            <div class="form-group form-inline col" style="position: relative;">
+                <label class=" col-lg-2 col-lg-offset-2">软件名称</label>
+                <input  type="text"  object="name" class="w form-control  form-inline w" />
+                <small style="color: #f00;"></small>
+            </div>
+            <div class="form-group form-inline col" style="position: relative;">
+                <label class=" col-lg-2 col-lg-offset-2">token长度</label>
+                <input  oninput="onlyDigital(this)"   type="text"  object="tokenlength" class="w form-control  form-inline w" />
+                <small style="color: #f00;"></small>
+            </div>
+            <div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2 col-lg-offset-2">时长</label> 
+						<select class="btn" object="shichang" value="10">
+                            <option value="10">10分钟</option>
+                            <option value="30">30分钟</option>
+                            <option value="60">1小时</option>
+                            <option value="720">12小时</option>
+                            <option value="1440">24小时</option>
+                            <option value="43200">30天</option>
+                            <option value="129600">90天</option>
+                            <option value="525600">365天</option>
+                        </select>
+					<small style="color: #f00;"></small>
+				</div>
+            <input type="hidden" object="id">
+            <div class="modal-footer">
+                <button type="button" onclick="softqueren()" class="btn btn-primary">
+                    确认
+                </button>
+                 <button onclick="hidedlg()" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+     </div>
+    </div>
+</div>    
+<script>
+//直接运行代码
+var softtype;
+updatesoftwave();
+//直接运行代码结束
+function addsoftpage(){
+	showdlg('#addsoftwave');
+	setobject({tittle:"添加软件",name:"",tokenlength:"32"},"softwave");
+	softtype="add";
+}
+function changesoftpage(id){
+	showdlg('#addsoftwave');
+	var o=GJson(host+"class=SoftAction&function=getOne",{id:id});
+	if(o.codeString=="true"){
+		setobject({tittle:"修改软件",name:o.object.name,tokenlength:o.object.tokenlength,id:o.object.id},"softwave");
+		softtype="change";
+	}
+	
+}
+function softqueren(){
+	var ob=getobject("softwave");
+	switch(softtype){
+	case "add":
+		var o=GJson(host+"class=SoftAction&function=add",{
+			name:ob.name,
+			tokenlength:ob.tokenlength,
+			shichang:ob.shichang});
+		if(o.codeString=="true"){
+			alert(o.msg);
+			
+		}else{
+			alert(o.msg);
+			return;
+		}
+		break;
+	case "change":
+		var o=GJson(host+"class=SoftAction&function=change",{
+			name:ob.name,tokenlength:ob.tokenlength,id:ob.id,
+			shichang:ob.shichang});
+		if(o.codeString=="true"){
+			alert(o.msg);
+			
+		}else{
+			alert(o.msg);
+			return;
+		}
+		break;
+	}//switch结束
+	updatesoftwave();
+	hidedlg();
+}
+
+function updatesoftwave() {
+	//<th>软件id</<th><th>软件名称</<th><th>序列号长度</<th><th>操作</<th>
+	var c = [{
+		data: 'id'
+	}, {
+		data: 'name'
+	}, {
+		data: 'tokenlength'
+	}, {
+		data: 'shichang'
+	}, {
+		data: 'id'
+	}];
+	
+		$('#softwavetable').DataTable().destroy();
+	
+	$('#softwavetable').DataTable({
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": host+"class=SoftAction&function=get",
+			"type": "POST"
+		},
+		columns: c,
+		"iDisplayLength": 100,
+		createdRow: function(row, data, index) {
+			var ht='<button class="btn btn-info" onclick="changesoftpage('+data.id+')" >修改</button>';
+			ht=ht+'&nbsp;<button class="btn btn-danger" onclick="delsoft('+data.id+')" >删除</button>';
+			if(data.run==1){
+				ht=ht+'&nbsp;<button class="btn btn-danger" onclick="stop('+data.id+')" >停止</button>';
+					
+			}else{
+				ht=ht+'&nbsp;<button class="btn btn-info" onclick="run('+data.id+')" >启动</button>';
+				
+			}
+			// <option value="10">10分钟</option>
+            // <option value="30">30分钟</option>
+            // <option value="60">1小时</option>
+            // <option value="720">12小时</option>
+           //  <option value="1440">24小时</option>
+           //  <option value="43200">30天</option>
+           //  <option value="129600">90天</option>
+          //   <option value="525600">365天</option>
+          var shichang=data.shichang;
+          if(shichang<60){
+        	  data.shichang=data.shichang+"分钟";
+          }else if(shichang<1500){
+        	  data.shichang=data.shichang/60+"小时";
+          }else{
+        	  data.shichang=data.shichang/60/24+"天";
+          }
+          $('td', row).eq(3).html(data.shichang);
+			$('td', row).eq(4).html(ht);
+
+
+		},
+		language: language
+	});
+
+}
+function delsoft(id){
+	if(confirm("确认删除")){
+		ob=GJson("/token/index?method=index&class=AdminAction&function=delSoft",{id:id});
+		alert(ob.msg);
+		updatesoftwave();
+	}
+}
+function stop(id){
+	if(confirm("确认停止")){
+		ob=GJson(
+		"/token/index?method=index&class=AdminAction&function=runSoft"
+				,{id:id,cs:0});
+		alert(ob.msg);
+		updatesoftwave();
+	}
+}
+function run(id){
+	
+		ob=GJson("/token/index?method=index&class=AdminAction&function=runSoft"
+				,{id:id,cs:1});
+		alert(ob.msg);
+		updatesoftwave();
+	
+}
+</script>

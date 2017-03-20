@@ -1,0 +1,42 @@
+<h2>软件管理2</h2>
+
+<h6></h6>
+<table class="table table-striped table-bordered " id="softwavetable2">
+    <thead>
+        <tr>
+            <th>软件id</<th><th>软件名称</<th><th>序列号长度</<th>
+            <th>时长</<th><th>操作</<th>
+        </tr>
+    </thead>
+</table>
+<script>
+function initsw2(){
+	//updatesoftwave2();
+	newtable("softwavetable2",["软件id","软件名称","序列号长度","时长","操作"]
+	,["id","name","tokenlength","shichang","id"],
+	host+"class=SoftAction&function=get",function(row, data, index){
+		//console.log(index);
+		//console.log(data);
+	});
+}
+function updatesoftwave2() {
+	//<th>软件id</<th><th>软件名称</<th><th>序列号长度</<th><th>操作</<th>
+	var c = [{data: 'id'}, {data: 'name'}, {data: 'tokenlength'	},
+	         {data: 'shichang'}, {data: 'id'}];
+		$('#softwavetable2').DataTable().destroy();
+	$('#softwavetable2').DataTable({
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": host+"class=SoftAction&function=get",
+			"type": "POST"
+		},
+		columns: c,
+		"iDisplayLength": 100,
+		createdRow: function(row, data, index) {
+		},
+		language: language
+	});
+
+}
+</script>

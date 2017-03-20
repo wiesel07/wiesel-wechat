@@ -1,0 +1,215 @@
+
+<h2>活动管理</h2>
+<!-- <div class="table-responsive">
+    <div id="toolbar_wechatuser" class="btn-group">
+	    <button type="button" class="btn btn-default">
+	        <i class="glyphicon glyphicon-plus"></i>
+	    </button>
+	      <div class="btn-group">
+		    <button type="button" class="btn btn-info" onclick="addVote()">发布投票</button>
+		 </div>
+    </div> -->
+ 
+ 
+ <!--  -->
+ 	    <div id="toolbar_vote" class="btn-group">
+		     <div class="btn-group">
+		       <button type="button" class="btn btn-info" onclick="addVote()">发布投票</button>
+		     </div> 
+        </div>
+	<table id="table_vote" data-toggle="table"
+	       data-url="/wiesel-wechat/core/queryVotePage"  
+	       data-classes="table table-hover table-condensed"
+	       data-sort-name="voteTitle"
+	       data-sort-order="desc" 
+	       data-click-to-select="true"
+	       data-search="true"
+	       data-show-refresh="true"
+	       data-show-toggle="true"
+	       data-show-columns="true" 
+	       data-toolbar="#toolbar_vote"
+	       data-pagination="true"
+	       data-height="500"
+	       >
+	    <thead>
+	    <tr>
+	        <th  data-checkbox="true" >Index</th>
+	        <th data-field="voteTitle" data-sortable="true"  data-align="center">标题</th>
+	        <th data-field="voteType" data-sortable="true"   data-align="center">类型</th>
+			<th data-field="startDate" data-sortable="true" data-align="center">开始时间</th>
+			<th data-field="endDate" data-sortable="true"  data-align="center">结束时间</th>
+			<th data-field="validDay" data-sortable="true"  data-align="center">有效天数</th>
+			<th data-field="voteAccount" data-sortable="true" data-formatter="accountFormatter"  data-align="center">有效性</th>
+			<th data-field="action" data-formatter="actionFormatter" data-align="center" data-events="actionEvents">操作</th>
+		</tr>
+	    </thead>
+	</table>
+ <!--  -->
+    
+    <div class="modal fade" tabindex="-1" id="myModal">
+		<div class="modal-dialog">
+			<div class="modal-content" style="left:-130px">
+
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">
+						<b id="title">操作提示</b>
+					</h4>
+				</div>
+
+				<div class="modal-body"></div>
+
+				<div class="modal-footer">
+					<button id="save" class="btn btn-primary">确定</button>
+					<button class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+ 
+
+<script type="text/javascript">
+$('#table_vote').bootstrapTable({
+    url: '/wiesel-wechat/core/queryVotePage'
+}); 
+
+function accountFormatter(val){
+	if(val==null)return "";
+	if(val=="1"){
+		return "有效";
+	}else if(val="2"){
+		return "失效";
+	}else{
+		return "";
+	}
+}
+function addVote(){
+
+	console.log("发起投票");
+	
+			/*3：弹出修改用户信息的对话框*/
+    		var editURL = "html/addVote.html";
+		
+    		showModalFrame('新增投票',editURL,800,430,true);
+    		$('#save').click(function(){
+    			$('#save').attr('disabled','disable');//禁用按钮。防止重复提交
+    		
+				var addFrame = document.getElementById("modalFrame");	//父窗口获取子窗口的数据。
+								    				
+				var childWindow = addFrame.contentWindow;
+				var formData = childWindow.jQuery("#defaultForm").serializeArray();//取子窗口整个form的数据
+			//	var formData1 = childWindow.jQuery("#defaultForm_1").serializeArray();//取子窗口整个form的数据
+			var items ='';
+			      
+			
+			var data={"formData":formData,"items":items};
+				/*ajax提交到服务端，服务端进行保存*/
+				var modifyURL = "/wiesel-wechat/core/doSaveVote?items="+items;
+				$.ajax({
+					type:"POST",
+					url:modifyURL,
+					data:formData,
+					dataType:"json",
+					success:function(data){
+						if(data.flag){
+							$('#myModal').modal('hide');
+							showMsg('添加成功');
+						}
+						else{
+							$.messager.alert("操作提示","操作失败原因="+data.errorMsg,"error",function(){});
+							$('#save').removeAttr('disabled');
+						}
+					}
+				});
+    		});
+}//结束
+
+
+//操作完成提示
+function showMsg(msg){
+	$.blockUI({ 
+           message: msg, 
+           fadeIn: 300,
+           fadeOut: 500,
+           timeout: 800,
+           css:{
+           	border: 'none',
+           	fontSize: '16px',
+           	borderRadius: '5px',
+           	padding: '5px',
+           	fontWeight: 'bold'
+           }
+       }); 
+}
+
+//showModal(标题, 要显示的消息, 是否显示确定按钮)
+function showModal(title, msg, isSave){
+	$('#save').unbind('click');//取消上一次操作的点击事件
+	$('#title').html(title);
+	$('.modal-body').html(msg).css({'height':'50px'});
+	$('.modal-dialog').css({'margin':'30px auto'});
+	$('.modal-content').css({'width':'600px'});
+	$('#myModal').modal('show').removeAttr('disabled');
+	if(isSave){
+		$('#save').show();
+	}else{
+		$('#save').hide();
+	}
+	$('#save').removeAttr('disabled');
+}
+	
+//showModalFrame(标题,iframe的src地址,iframe宽,iframe高, true开启：false隐藏确定按钮)
+function showModalFrame(title, url, width, height, isSave){
+	/* $(".modal-dialog").draggable();//为模态对话框添加拖拽
+    $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动 */
+    $('#save').unbind('click');
+	$('#title').html(title);
+	$('#myModal').modal('show');
+	$('.modal-dialog').css({'marginLeft':370-(width-600)/2});
+	$('.modal-content').css({'width':width,'left':'130px'});
+	$('.modal-body').css({'height':height}).html('<iframe name="modalFrame" id="modalFrame" scrolling="yes" frameborder="0" style="width:100%;height:99%;"></iframe>');
+	$('#modalFrame').attr({'src':url});
+	if(isSave){
+		$('#save').show();
+	}else{
+		$('#save').hide();
+	}
+	$('#save').removeAttr('disabled');
+}
+
+function runningFormatter(value, row, index) {
+    return index+1;
+};
+
+function actionFormatter(value, row, index) {
+    return [
+        '<a class="like" href="javascript:void(0)" title="Like">',
+        '<i class="glyphicon glyphicon-heart"></i>',
+        '</a>',
+        '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
+        '<i class="glyphicon glyphicon-edit"></i>',
+        '</a>',
+        '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+        '<i class="glyphicon glyphicon-remove"></i>',
+        '</a>'
+    ].join('');
+};
+
+window.actionEvents = {
+    'click .like': function (e, value, row, index) {
+        alert('You click like icon, row: ' + JSON.stringify(row));
+        console.log(value, row, index);
+    },
+    'click .edit': function (e, value, row, index) {
+        alert('You click edit icon, row: ' + JSON.stringify(row));
+        console.log(value, row, index);
+    },
+    'click .remove': function (e, value, row, index) {
+        alert('You click remove icon, row: ' + JSON.stringify(row));
+        console.log(value, row, index);
+    }
+};
+
+</script>
+<script src="../../jslib/jquery/jquery.min.js"></script>

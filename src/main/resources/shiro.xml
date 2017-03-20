@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:idubbo="http://code.alibabatech.com/schema/idubbo" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://code.alibabatech.com/schema/idubbo
+	http://code.alibabatech.com/schema/idubbo/idubbo.xsd">
+	
+	
+	<!-- 继承自AuthorizingRealm的自定义Realm,这里主要是设置自定义的单Realm应用,若有多个Realm,可使用'realms'属性代替 -->
+	<bean id="myRealm" class="com.bosssoft.shiro.MyRealm"/>
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+	</bean>
+	
+	<!--Shiro过滤器 核心, Web应用中,Shiro可控制的Web请求必须经过Shiro主过滤器的拦截,Shiro对基于Spring的Web应用提供了完美的支持 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- Shiro的核心安全接口,这个属性是必须的 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 要求登录时的链接 -->
+		<property name="loginUrl" value="/index.jsp" />
+		<!-- 认证成功统一跳转到mq.jsp，建议不配置，shiro认证成功自动到上一个请求路径-->
+		<property name="successUrl" value="/WEB-INF/jsp/mq.jsp"/> 
+		<!-- 用户访问未对其授权的资源时,所显示的连接 -->
+		<property name="unauthorizedUrl" value="/WEB-INF/jsp/forbidden.jsp" />
+		<!-- Shiro连接约束配置,即过滤链的定义 -->
+		<!-- anon：它对应的过滤器里面是空的,什么都没做 -->
+		<!-- authc：该过滤器下的页面必须验证后才能访问,它是Shiro内置的一个拦截器org.apache.shiro.web.filter.authc.FormAuthenticationFilter -->
+		<property name="filterChainDefinitions">
+			<value>
+			   
+				<!--表示访问/student请求的用户必须是teacher角色，不然是不能进行访问的
+					   /user/student=roles[teacher]-->
+				
+				
+				<!-- 表示访问/teacher请求是需要当前用户具有user:create权限才能进行访问的
+					   /user/teacher=perms["user:create"]-->
+				
+				<!--anon 表示匿名访问，不需要认证以及授权-->
+				/user/login=anon
+			
+				<!--authc表示需要认证 没有进行身份认证是不能进行访问的,且跳转到loginUrl-->
+              /user/admin=authc
+			</value>
+		</property>
+	</bean>
+	<!-- Shiro生命周期处理器，保证实现了Shiro内部lifecycle函数的bean执行-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+</beans>

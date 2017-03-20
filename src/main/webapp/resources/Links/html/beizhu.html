@@ -1,0 +1,126 @@
+
+<h2>备注管理</h2>
+<button class="btn btn-info" onclick="addbeizhupage()" >
+    添加
+</button>
+<h6></h6>
+<table class="table table-striped table-bordered " id="beizhutable">
+    <thead>
+        <tr>
+            <th>id</<th><th>备注内容</<th><th>操作</<th>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal-content" id="addbeizhu" style="display:none;">
+    <div object="beizhu">
+    <div class="modal-header">
+        <h2 id="dlg-title" object="tittle">软件管理</h2>
+    </div>
+    <div class="modal-body">
+        <div class="con">
+            <div class="form-group form-inline col" style="position: relative;">
+                <label class=" col-lg-2 col-lg-offset-2">软件名称</label>
+                <input  type="text"  object="name" class="w form-control  form-inline w" />
+                <small style="color: #f00;"></small>
+            </div>
+            
+            <input type="hidden" object="id">
+            <div class="modal-footer">
+                <button type="button" onclick="beizhuqueren()" class="btn btn-primary">
+                    确认
+                </button>
+                 <button onclick="hidedlg()" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+     </div>
+    </div>
+</div>    
+<script>
+//直接运行代码
+var beizhutype;
+updatebeizhu();
+//直接运行代码结束
+function addbeizhupage(){
+	showdlg('#addbeizhu');
+	setobject({tittle:"添加备注",name:""},"beizhu");
+	beizhutype="add";
+}
+function changebeizhupage(id){
+	showdlg('#addbeizhu');
+	var o=GJson(host+"class=beizhuAction&function=getOne",{id:id});
+	if(o.codeString=="true"){
+		setobject({tittle:"修改软件",name:o.object.name,tokenlength:o.object.tokenlength,id:o.object.id},"beizhu");
+		beizhutype="change";
+	}
+	
+}
+function beizhuqueren(){
+	var ob=getobject("beizhu");
+	switch(beizhutype){
+	case "add":
+		var o=GJson(host+"class=AdminAction&function=addBeizhu",{name:ob.name});
+		if(o.codeString=="true"){
+			alert(o.msg);
+			
+		}else{
+			alert(o.msg);
+			return;
+		}
+		break;
+	case "change":
+		var o=GJson(host+"class=AdminAction&function=change",{name:ob.name,tokenlength:ob.tokenlength,id:ob.id});
+		if(o.codeString=="true"){
+			alert(o.msg);
+			
+		}else{
+			alert(o.msg);
+			return;
+		}
+		break;
+	}//switch结束
+	updatebeizhu();
+	hidedlg();
+}
+
+function updatebeizhu() {
+	//<th>软件id</<th><th>软件名称</<th><th>序列号长度</<th><th>操作</<th>
+	var c = [{
+		data: 'id'
+	}, {
+		data: 'beizhu'
+	}, {
+		data: 'beizhu'
+	}];
+	
+		$('#beizhutable').DataTable().destroy();
+	
+	$('#beizhutable').DataTable({
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": host+"class=AdminAction&function=getBeizhuList",
+			"type": "POST"
+		},
+		columns: c,
+		"iDisplayLength": 100,
+		createdRow: function(row, data, index) {
+			var ht='<button class="btn btn-info" onclick="delbeizhu('
+					+data.id+')" >删除</button>';
+			$('td', row).eq(2).html(ht);
+
+
+		},
+		language: language
+	});
+
+}
+function delbeizhu(id){
+	if(!confirm("确认删除")){
+		return;
+		}
+		ob=GJson("/token/index?method=index&class=AdminAction&function=delBeizhu",{id:id});
+		alert(ob.msg);
+		updatebeizhu();
+}
+</script>

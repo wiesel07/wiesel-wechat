@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>授权平台</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+         
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script type="text/javascript" src="../js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="../js/dataTables.bootstrap.js"></script>
+        <script type="text/javascript" src="../js/foundation.js"></script>
+</head>
+<body>
+
+    <div class="aui-content aui-margin-b-15" object="user">
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-header">用户登录</li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label-icon">
+                        <i class="aui-iconfont aui-icon-mobile"></i>
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="帐号" object="name">
+                    </div>
+                </div>
+            </li>
+            
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label-icon">
+                        <i class="aui-iconfont aui-icon-lock"></i>
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="password" placeholder="密码" object="pswd">
+                    </div>
+                    <div class="aui-list-item-label-icon">
+                        <i class="aui-iconfont aui-icon-display"></i>
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner aui-list-item-center aui-list-item-btn">
+                    <div onclick="login()" class="aui-btn aui-btn-info aui-margin-r-5">登录</div>
+                    <!-- <div class="aui-btn aui-btn-danger aui-margin-l-5">取消</div> -->
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js" ></script>
+<script type="text/javascript" src="../script/aui-range.js" ></script>
+<script type="text/javascript">
+    var range = new auiRange({
+        element:document.getElementById("range")
+    },function(ret){
+    })
+    apiready = function(){
+        api.parseTapmode();
+    }
+function login(){
+            var obj=getobject("user");
+            var html=postHtml("/token/index?method=index&class=LuaAction&function=userLogin",{name:obj.name,pswd:obj.pswd});
+            if(html=="ok"){
+               location.href="user.html";
+            }else{
+                alert(html);
+            }
+        }
+</script>
+</html>

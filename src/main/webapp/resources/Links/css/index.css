@@ -1,0 +1,74 @@
+body{
+	font-family: "微软雅黑";
+	overflow-x: hidden;
+}
+.header{
+	height: 60px;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #333;
+}
+.logo{
+	position: absolute;
+	left: 20px;
+	top: 0px;
+}
+.logo h3{
+	color: #fff;
+}
+.company{
+	position: absolute;
+	right: 20px;
+	top: 15px;
+}
+.company h5{
+	color: #fff;
+}
+.left{
+	background-color: #d8d8d8;
+	position: absolute;
+	left: 0;
+	top: 60px;
+	bottom: 0;
+	width: 180px;
+	padding: 5px;
+}
+.left a{
+	cursor: pointer;
+	color: #333;
+}
+.content{
+	overflow-y: scroll;
+	overflow-x: hidden;
+	position: absolute;
+	right: 0;
+	left: 180px;
+	top: 60px;
+	bottom: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.left-btn{
+	position: absolute;
+	right: 15px;
+	font-size: 18px;
+	top: 0;
+}
+.company-ul{
+	
+	list-style: none;
+	padding-left: 10px;
+}
+.company-ul li{
+	cursor: pointer;
+	font-size: 21px;
+	}
+.company-ul li:hover{
+	cursor: pointer;
+	text-decoration: underline;
+	}
+th{
+	text-align: center;
+}

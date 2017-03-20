@@ -1,0 +1,107 @@
+<div class="container" id="adddiv">
+	<h2>添加</h2>
+	<div class="row">
+		<div class="form-group form-inline col">
+			<label class=" col-lg-2">uuid</label>
+			<input type="text" style="width: 400px;" name="name" class="w form-control  form-inline w" />
+		</div>
+		<div class="form-group form-inline">
+			<label class=" col-lg-2">部门</label>
+			<select style="width: 400px;" class="form-control form-inline w">
+				<option></option>
+				<option>事业部</option>
+				<option>技术部</option>
+			</select>
+		</div>
+		<div class="form-group form-inline ">
+			<label class=" col-lg-2" >权限</label>
+			<label>
+			<ul class="tree">
+				<li class="tree-li">
+					<label class="checkbox-inline">
+						<input class="qx" type="checkbox" checked="" name="qx" value="1" > 选项 1
+					</label>
+				</li>
+				<li class="tree-li">
+					<label class="checkbox-inline">
+						<input class="qx" type="checkbox"   name="qx" value="2"> 选项 1
+						<ul class="tree">
+							<li class="tree-li">
+								<label class="checkbox-inline">
+									<input class="qx" type="checkbox"  name="qx" value="3"> 选项 1
+								</label>
+							</li>
+							<li class="tree-li">
+								<label class="checkbox-inline">
+									<input  class="qx" type="checkbox"   name="qx" value="4"> 选项 1
+								</label>
+							</li>
+						</ul>
+					</label>
+
+				</li>
+				<li class="tree-li">
+					<label class="checkbox-inline">
+						<input class="qx" type="checkbox"   name="qx" value="2"> 选项 1
+						<ul class="tree">
+							<li class="tree-li">
+								<label class="checkbox-inline">
+									<input class="qx" type="checkbox"  name="qx" value="3"> 选项 1
+								</label>
+							</li>
+							<li class="tree-li">
+								<label class="checkbox-inline">
+									<input  class="qx" type="checkbox"   name="qx" value="4"> 选项 1
+								</label>
+							</li>
+						</ul>
+					</label>
+
+				</li>
+			</ul>				
+			</label>
+
+
+		</div>
+		<div class="form-group form-inline">
+			<label class=" col-lg-2">部门</label>
+			<select style="width: 400px;" class="form-control form-inline w" multiple="multiple">
+				<option>事业部</option>
+				<option>技术部</option>
+			</select>
+		</div>
+		<div class="form-group form-inline">
+			<label class=" col-lg-2">照片</label>
+			<input type="file" style="width: 280px;" name="pswd" class="form-control form-inline w" />
+			<input type="hidden" style="width: 280px;" name="pswd" class="form-control form-inline w" />
+			<button class="btn btn-info">拍照</button>
+			<button class="btn btn-info">预览</button>
+		</div>
+		<div class="form-group form-inline">
+			<label class=" col-lg-2">备注</label>
+			<textarea style="width: 400px;" class="form-control form-inline w" rows="5"></textarea>
+		</div>
+		<button onclick="deal.add()" class="btn col-lg-offset-2">添加</button>
+		<button onclick="addhide()" class="btn ">返回</button>
+	</div>
+</div>
+<div class="container" id="changediv">
+	<h2>修改</h2>
+	<div class="row">
+
+		<div class="form-group form-inline col">
+			<label class=" col-lg-2">uuid</label>
+			<input type="text" style="width: 400px;" name="name" class="w form-control  form-inline w" />
+		</div>
+		<div class="form-group form-inline">
+			<label class=" col-lg-2">标识符</label>
+			<input type="text" style="width: 400px;" name="pswd" class="form-control form-inline w" />
+		</div>
+		<div class="form-group form-inline">
+			<label class=" col-lg-2">备注</label>
+			<input type="text" style="width: 400px;" name="beizhu" class="form-control form-inline w" />
+		</div>
+		<button type="submit" class="btn col-lg-offset-2">修改</button>
+		<button onclick="changehide()" class="btn ">返回</button>
+	</div>
+</div>

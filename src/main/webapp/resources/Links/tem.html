@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/dataTables.bootstrap.css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="js/dataTables.bootstrap.js"></script>
+		<script type="text/javascript" src="js/foundation.js"></script>
+		<title>ip管理</title>
+	</head>
+<script>
+
+</script>
+	<body>
+		<div class="container" id="adddiv">
+			<H3>用户信息管理页面</H3>
+			<button class="btn btn-info" onclick="getinfo()" id="getinfo">刷新信息</button>
+			<a href="index?m=User.down&status=0" class="btn-info btn">下载未完成</a>
+			<div id="info">
+				
+			</div>
+			<script>
+				function getinfo(){
+					$("#info").html(getHtml("index?m=User.getInfo&_="+Math.random()));
+				}
+				getinfo();
+			</script>
+		</div>
+		<style>
+			.log{
+				position: absolute;
+				left: 600px;
+				top: 0;
+				right: 00;
+				bottom: 0;
+				
+				background-color: #00BCD4;
+				height: 100px;
+			}
+		</style>
+		<div class="log">
+			<textarea style="font-size: 12px;" rows="30" cols="60" id="log"></textarea>
+		</div>
+	</body>
+
+</html>

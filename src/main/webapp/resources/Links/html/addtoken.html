@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+        <link rel="stylesheet" type="text/css" href="../css/aui-pull-refresh.css" />
+        <script type="text/javascript" src="../js/fastclick.js"></script>
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script type="text/javascript" src="../js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="../js/dataTables.bootstrap.js"></script>
+        <script type="text/javascript" src="../js/foundation.js"></script>
+        
+        <script src="../script/aui-pull-refresh.js"></script>
+        <style>
+            .content {
+                position: absolute;
+                left: 0;
+                right: 0;
+                overflow-y: scroll;
+                top:2.25rem;
+                bottom:2.25rem;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-light">
+           <a class="aui-pull-left aui-btn" href="user.html" >
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a> 
+            <div class="aui-title">
+                生成token
+            </div>
+            
+        </header>
+         <div class="aui-content aui-margin-b-15">
+             <ul class="aui-list aui-form-list" object="token" >
+                 <input type="hidden" object="id">
+                 <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                       软件
+                    </div>
+                    <div class="aui-list-item-input" object="name">
+                        
+                    </div>
+                </div>
+            </li> <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                       token长度
+                    </div>
+                    <div class="aui-list-item-input" object="length" >
+                        
+                    </div>
+                </div>
+            </li>
+                 <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        张数
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input  object="num" oninput="onlyDigital(this)"  type="text" placeholder="张数">
+                    </div>
+                </div>
+            </li>
+                 <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        时长
+                    </div>
+                     <div class="aui-list-item-input" object="shichang">
+                        
+                    </div>
+                </div>
+            </li>
+                 <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        备注
+                    </div>
+                   <div class="aui-list-item-input">
+                        <select object="beizhu">
+                               <script>
+                               function GJson(url,data){
+var o=postJson(url+"&_="+Math.random(),data);
+if(o){
+if(o.codeString=="no login"){
+location.href="mobile.html";
+}
+}
+return o;
+}
+                                ob=GJson("/token/index?method=index&class=UserAction&function=getBeizhus",{});
+
+if(ob.codeString=="true")     {
+
+var ht="";
+for(var j=0;j<ob.object.length;j++){
+    
+var obj=ob.object[j];
+ht='<option value="'+obj.beizhu+'">'+obj.beizhu+'</option>';
+if(j==0){
+    ht='<option value="'+obj.beizhu+'" selected>'+obj.beizhu+'</option>';
+}
+document.write(ht);
+}
+}
+                               </script>
+                        </select>
+                    </div>
+                </div>
+            </li>
+                
+             </ul>
+                 <div class="aui-content-padded">
+                <p>
+                    <div onclick="addtoken()" class="aui-btn aui-btn-primary aui-btn-block aui-btn-outlined" onclick="changepswddlg()" >
+                        生成
+                    </div>
+                </p>
+                </div>
+                
+           <div class="aui-list-item-inner" style="padding:0.5rem">
+                    
+                   <textarea style="border:1px solid #000;"  id="tokens" rows="10" cols="50" 
+>
+  
+</textarea>
+
+         </div>  
+         
+    </body>
+    <script type="text/javascript" src="../script/api.js" ></script>
+    <script type="text/javascript" src="../script/aui-range.js" ></script>
+    <script type="text/javascript" src="../script/aui-dialog.js" ></script>
+    <script type="text/javascript">
+    function setTextSelected(inputDom, startIndex, endIndex)
+{
+    if (inputDom.setSelectionRange)
+    {  
+        inputDom.setSelectionRange(startIndex, endIndex);  
+    }   
+    else if (inputDom.createTextRange) //IE 
+    {
+        var range = inputDom.createTextRange();  
+        range.collapse(true);  
+        range.moveStart('character', startIndex);  
+        range.moveEnd('character', endIndex - startIndex-1);  
+        range.select();
+    }  
+    inputDom.focus();  
+}
+        function init(){
+            var id=GetQueryString("softid");
+            ob=GJson("/token/index?method=index&class=UserAction&function=getSoftwave",{id:id});
+            if(ob.codeString=="true"){
+                var obj=ob.object;
+                var shichang=obj.shichang;
+          if(shichang<60){
+              obj.shichang=obj.shichang+"分钟";
+          }else if(shichang<1500){
+              obj.shichang=obj.shichang/60+"小时";
+          }else{
+              obj.shichang=obj.shichang/60/24+"天";
+          }
+                setobject({name:obj.name,
+                    length:obj.tokenlength,
+                    shichang:obj.shichang,id:id},"token");
+            }
+            $("#tokens").focus();
+        }
+        function addtoken(){
+            var id=GetQueryString("softid");
+            var o=getobject("token");
+            var ob=GJson("/token/index?method=index&class=UserAction&function=addToken",{
+                id:id,num:o.num,beizhu:o.beizhu
+                });
+            alert(ob.msg);
+            if(ob.codeString=="true"){
+                var obj=ob.object;
+                $("#tokens").val(obj);
+                $("#tokens").focus();
+            }else{
+                
+            }
+        }
+        $(document).ready(function() {
+            islogin();
+            FastClick.attach(document.body);
+            init();
+        });
+        var range = new auiRange({
+            element : document.getElementById("range")
+        }, function(ret) {
+        });
+        apiready = function() {
+            api.parseTapmode();
+        };
+        
+function GJson(url,data){
+    var o=postJson(url+"&_="+Math.random(),data);
+    if(o){
+        if(o.codeString=="no login"){
+            location.href="mobile.html";
+        }
+    }
+    return o;
+}
+
+        function islogin() {
+
+            var html = getJson("/token/index?method=index&class=LuaAction&function=userislogin");
+            if (html) {
+                if (html.codeString == "true") {
+                    user = html.object;
+
+                } else {
+                    location.href = "mobile.html";
+                }
+            } else {
+                location.href = "mobile.html";
+            }
+        }
+    </script>
+
+</html>

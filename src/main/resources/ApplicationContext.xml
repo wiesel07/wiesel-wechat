@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+	
+	<!-- 引入属性配置文件   参考 -->
+	<!--<bean id="propertiesFactoryBean" class="com.bosssoft.util.PropertiesUtil">
+			<property name="locations">
+				<list>
+					<value>classpath:properties/system.properties</value>
+					<value>classpath:properties/jdbc.properties</value>
+				</list>
+			</property>
+		</bean>-->
+	<!-- 引入属性配置文件
+		<bean id="propertiesFactoryBean"
+			class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+			<property name="locations">
+				<list>
+					<value>classpath:properties/system.properties</value>
+					<value>classpath:properties/jdbc.properties</value>
+				</list>
+			</property>
+		</bean> -->
+	<context:annotation-config />
+	
+	<!-- 不扫描带有@Controller注解的类 ,让 springMVC 子容器加载。  -->
+	<context:component-scan base-package="wiesel.wechat">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<!--<context:exclude-filter type="annotation" expression="org.springframework.cache.annotation.EnableCaching" />-->
+	</context:component-scan>
+	
+	
+	<context:property-placeholder location="classpath:properties/jdbc.properties" />
+
+
+	<!-- 慢SQL记录 *start* -->
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<!-- 开启合并sql -->
+		<property name="mergeSql" value="true" />
+		<!-- 开启慢查询语句,1秒 -->
+		<property name="slowSqlMillis" value="1000" />
+		<property name="logSlowSql" value="true" />
+	</bean>
+	<!--<bean id="logFilter" class="com.alibaba.druid.filter.logging.Log4jFilter"></bean>-->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!--属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat;
+			日志用的filter:log4j;防御sql注入的filter:wall;合并sql的filter:mergeStat-->
+		<property name="filters" value="stat,log4j,wall"/>
+		<!--如果同时配置了filters和proxyFilters，是组合关系，并非替换关系-->
+		<property name="proxyFilters">
+			<list>
+				<ref bean="stat-filter"/>
+				<!--<ref bean="logFilter" />-->
+			</list>
+		</property>
+		<property name="maxActive" value="20"/> 
+		<property name="initialSize" value="1"/> 
+		<property name="maxWait" value="60000"/> 
+		<property name="minIdle" value="1"/> 
+		<property name="timeBetweenEvictionRunsMillis" value="3000"/> 
+		<property name="minEvictableIdleTimeMillis" value="300000"/> 
+			
+		<property name="validationQuery" value="SELECT 'x'"/> 
+		<property name="testWhileIdle" value="true"/> 
+		<property name="testOnBorrow" value="false"/> 
+		<property name="testOnReturn" value="false"/> 
+			
+		<property name="poolPreparedStatements" value="true"/> 
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20"/> 
+	</bean>
+
+ 
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<!-- 配置数据源 -->
+		<property name="dataSource" ref="dataSource" ></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"  />
+	
+	<!-- 引入SPRING配置文件 -->	
+	<import resource="spring/mybatis.xml"/>
+	<!--<import resource="spring/shiro.xml"/>-->
+	<!--<import resource="spring/mq.xml"/>-->
+</beans>

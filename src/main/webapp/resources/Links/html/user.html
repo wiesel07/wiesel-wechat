@@ -1,0 +1,453 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+        <link rel="stylesheet" type="text/css" href="../css/aui-pull-refresh.css" />
+        <script type="text/javascript" src="../js/fastclick.js"></script>
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script type="text/javascript" src="../js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="../js/dataTables.bootstrap.js"></script>
+        <script type="text/javascript" src="../js/foundation.js"></script>
+        <script src="../script/aui-pull-refresh.js"></script>
+        <style>
+            .content {
+                position: absolute;
+                left: 0;
+                right: 0;
+                overflow-y: scroll;
+                top: 2.25rem;
+                bottom: 2.25rem;
+            }
+            .con {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-bar-light">
+
+            <div class="aui-title">
+                授权平台
+            </div>
+            <a onclick="shuaxin()" class="aui-pull-right aui-btn aui-btn-outlined"> <span class="aui-iconfont aui-icon-refresh"></span> </a>
+        </header>
+        <div style="display:none;position:fixed;bottom:2.25rem;right:0;z-index:9999;" id="mudelbtn">
+            <div onclick="mudelall()" class="aui-btn aui-btn-danger">
+                批量删除
+            </div>
+        </div>
+        <div class="content">
+            <div class="con con1"  >
+                <div class="aui-content-padded">
+                    <h1 id="notice">
+                    <script>
+                        document.write(getHtml("/token/index?method=index&class=LuaAction&function=getNotice"));
+                    </script></h1>
+                </div>
+            </div>
+
+            <div class="con con2"  >
+                <div class="aui-searchbar" id="search" style="position:inherit">
+                    <div class="aui-searchbar-input aui-border-radius" tapmode onclick="updateToken()">
+                        <i class="aui-iconfont aui-icon-search"></i>
+                        <form action="javascript:search();">
+                            <input oninput="updateToken()" type="search" placeholder="请输入搜索内容" id="search-input">
+                        </form>
+                    </div>
+                    <div class="aui-searchbar-cancel" tapmod>
+                        取消
+                    </div>
+                </div>
+                <section class="aui-content-padded" id="tokens" >
+
+                </section>
+                <div class="aui-content-padded">
+                    <p>
+                        <div class="aui-btn aui-btn-primary aui-btn-block aui-btn-outlined" onclick="nextpage()" >
+                            下一页
+                        </div>
+                    </p>
+                </div>
+            </div>
+
+            <div class="con con3"  >
+                <div class="aui-content aui-margin-b-15" object="user">
+                    <ul class="aui-list aui-form-list">
+                        <li class="aui-list-header">
+                            修改密码
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-mobile"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="text" placeholder="新密码" id="pswd">
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner aui-list-item-center aui-list-item-btn">
+                                <div onclick="changepswddlg()" class="aui-btn aui-btn-info aui-margin-r-5">
+                                    修改密码
+                                </div>
+                                <!-- <div class="aui-btn aui-btn-danger aui-margin-l-5">取消</div> -->
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="con con4"  >
+
+            </div>
+            <div class="con "  >
+                <div class="aui-content aui-margin-b-15" object="user">
+                    <ul class="aui-list aui-form-list">
+                        <li class="aui-list-header">
+                            添加备注
+                        </li>
+                        <li class="aui-list-item" object="">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont aui-icon-mobile"></i>
+                                </div>
+                                <div class="aui-list-item-input">
+                                    <input type="text" placeholder="备注" id="addbeizhu">
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner aui-list-item-center aui-list-item-btn">
+                                <div onclick="addbeizhu()" class="aui-btn aui-btn-info aui-margin-r-5">
+                                    确认
+                                </div>
+                                <!-- <div class="aui-btn aui-btn-danger aui-margin-l-5">取消</div> -->
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="con5">
+                </div>
+            </div>
+            <div style="width:100%;height: 2.25 rem;"  ></div>
+        </div>
+        <footer class="aui-bar aui-bar-tab " id="footer">
+            <div class="aui-bar-tab-item aui-active" tapmode onclick="showdiv(0,this)">
+                <i class="aui-iconfont aui-icon-home"></i>
+                <div class="aui-bar-tab-label">
+                    首页
+                </div>
+            </div>
+
+            <div class="aui-bar-tab-item" tapmode onclick="showdiv(1,this)">
+                <i class="aui-iconfont aui-icon-mobile"></i>
+                <div class="aui-bar-tab-label">
+                    token
+                </div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode  onclick="showdiv(3,this)">
+
+                <i class="aui-iconfont aui-icon-cart"></i>
+                <div class="aui-bar-tab-label">
+                    可用次数
+                </div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode  onclick="showdiv(4,this)">
+
+                <i class="aui-iconfont aui-icon-pencil"></i>
+                <div class="aui-bar-tab-label">
+                    备注
+                </div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode onclick="showdiv(2,this)">
+
+                <i class="aui-iconfont aui-icon-my"></i>
+                <div class="aui-bar-tab-label">
+                    我的
+                </div>
+            </div>
+        </footer>
+    </body>
+    <script type="text/javascript" src="../script/api.js" ></script>
+    <script type="text/javascript" src="../script/aui-range.js" ></script>
+    <script type="text/javascript" src="../script/aui-dialog.js" ></script>
+    <script type="text/javascript" src="../script/aui-toast.js" ></script>
+    <script type="text/javascript">
+var toast1 = new auiToast();
+function shuaxin(){
+$("#notice").html(getHtml("/token/index?method=index&class=LuaAction&function=getNotice"));
+updatebeizhu();
+toast1.loading({
+title:"加载中",
+duration:2000
+},function(ret){
+islogin();
+updateusernum();
+updateToken();
+num_mu=0;
+setTimeout(function(){
+toast1.hide();
+}, 200)
+
+});
+}
+function mudelall(){
+if(!confirm("确认删除?")){
+return;
+}
+var list=$(".mudel");
+var i=0;
+for(var j=0;j<list.length;j++){
+if($(list[j]).attr("mu")=="1"){
+//console.log($(list[j]).attr("tokenid"));
+var ob=GJson("/token/index?method=index&class=UserAction&function=delToken",
+{id:$(list[j]).attr("tokenid")});
+if(ob.codeString=="true"){
+i++;
+}
+}
+}
+alert("成功删除"+i+"个");
+updateToken();
+num_mu=0;
+$("#mudelbtn").hide();
+}
+var num=0;
+function huishoutoken(id){
+if(!confirm("确认回收")){
+return;
+}
+ob=GJson("/token/index?method=index&class=UserAction&function=huishouToken",{id:id});
+alert(ob.msg);
+updateToken();
+}
+function deltoken(id){
+if(!confirm("确认删除")){
+return;
+}
+ob=GJson("/token/index?method=index&class=UserAction&function=delToken",{id:id});
+alert(ob.msg);
+updateToken();
+}
+function updateToken(){
+ob=GJson("/token/index?method=index&class=UserAction&function=getTokens",{num:0,name:$("#search-input").val()});
+num=1;
+$("#tokens").html("");
+if(ob.codeString=="true"){
+addtoken(ob);
+}
+
+}
+var num_mu=0;
+function mudel(th){
+var mu=$(th).attr("mu");
+if(mu=="0"){
+$(th).attr("mu","1");
+$(th).text("已选择");
+num_mu++;
+if(num_mu>0){
+$("#mudelbtn").show();
+}
+}else{
+$(th).attr("mu","0");
+$(th).text("多选删除");
+num_mu--;
+if(num_mu<1){
+$("#mudelbtn").hide();
+}
+}
+}
+function addtoken(ob){
+for(var j=0;j<ob.object.length;j++){
+var obj=ob.object[j];
+var ht='<div class="aui-card-list" object="token'+obj.id+'" id="token'+obj.id+'">\
+<div class="aui-card-list-header">\
+<p object="softname"> 微信</p><a class="aui-btn aui-btn-primary huishou" onclick="huishoutoken('+obj.id+')" >回收</a><a class="del aui-btn aui-btn-primary" onclick="deltoken('+obj.id+')" >删除</a><a onclick="mudel(this)" mu="0" tokenid="'+obj.id+'" class="mudel aui-btn aui-btn-primary">多选删除</a>\
+</div>\
+<div class="aui-card-list-content-padded">\
+token(点击编辑框全选复制)<input style="border:1px solid #000;" type="text" object="token">\
+</div>\
+<div class="aui-card-list-footer">\
+<h3><p>机器码</p><p>时长</p>生成时间<p>激活时间</p><p>状态</p><p>备注</p></h3>\
+<h3>\
+<p object="machine">1234555</p><p object="shichang">1234555</p>\
+<p object="sctime">状态</p><p object="jhtime">状态</p>\
+<p object="statusname">已激活</p>\
+<p object="beizhu">已激活</p></h3>\
+</div>\
+</div>';
+$("#tokens").append(ht);
+var s="未激活";
+
+switch(i=obj.status){
+case 0:
+$("#token"+obj.id).find(".huishou").hide();
+obj.jhtime="未激活";
+break;
+case 1:
+s="已激活";
+break;
+case 2:
+$("#token"+obj.id).find(".huishou").hide();
+s="已失效";
+obj.jhtime="已失效";
+break;
+}
+obj.statusname=s;
+if(!obj.machine){
+obj.machine="无";
+}
+var shichang=obj.shichang;
+          if(shichang<60){
+              obj.shichang=obj.shichang+"分钟";
+          }else if(shichang<1500){
+              obj.shichang=obj.shichang/60+"小时";
+          }else{
+              obj.shichang=obj.shichang/60/24+"天";
+          }
+obj.beizhu="("+obj.beizhu+")";
+//console.log(obj.isshow);
+if(obj.isshow==0){
+$("#token"+obj.id).find(".huishou").hide();
+$("#token"+obj.id).find(".del").hide();
+$("#token"+obj.id).find(".mudel").hide();
+}
+setobject(obj,"token"+obj.id);
+}
+}
+function nextpage(){
+ob=GJson("/token/index?method=index&class=UserAction&function=getTokens",{num:num,name:$("#search-input").val()});
+num++;
+if(ob.codeString=="true"){
+addtoken(ob);
+if(ob.object.length<1){
+var toast = new auiToast();
+toast.fail({
+title:"没有数据了....",
+duration:500
+});
+}
+}
+
+}
+function updateusernum(){
+
+ob=GJson("/token/index?method=index&class=UserAction&function=getUsernum",{});
+$(".con4").html("");
+if(ob.codeString=="true")     {
+
+for(var j=0;j<ob.object.length;j++){
+var obj=ob.object[j];
+ht='               <div class="aui-card-list" object="usernum'+obj.id+'" >\
+<div class="aui-card-list-header" >\
+<p object="name"> 微信</p><a href="addtoken.html?softid='+obj.softid+'"  class="aui-btn aui-btn-primary">生成</a>\
+</div>\
+<div class="aui-card-list-footer">\
+可用次数:<p object="cs">12</p>\
+</div>\
+<div class="aui-card-list-footer">\
+已用次数:<p object="ycs">12</p>\
+</div>\
+</div>';
+$(".con4").append(ht);
+setobject({name:obj.softwave.name,cs:obj.cs,ycs:obj.ycs},'usernum'+obj.id);
+}
+}
+}
+var dialog = new auiDialog();
+function changepswddlg(){
+
+var ob=GJson("/token/index?method=index&class=UserAction&function=changepswd",{pswd:$("#pswd").val()});
+
+alert(ob.msg);
+}
+$(document).ready(function() {
+islogin();
+FastClick.attach(document.body);
+$(".con").hide();
+$($(".con")[0]).show();
+updateusernum();
+updateToken();
+updatebeizhu();
+num_mu=0;
+});
+var range = new auiRange({
+element : document.getElementById("range")
+}, function(ret) {
+})
+apiready = function() {
+api.parseTapmode();
+}
+function showdiv(s, th) {
+$(".con").hide();
+$(".aui-bar-tab-item").removeClass("aui-active");
+$($(".con")[s]).show();
+$(th).addClass("aui-active");
+}
+function GJson(url,data){
+var o=postJson(url+"&_="+Math.random(),data);
+if(o){
+if(o.codeString=="no login"){
+location.href="mobile.html";
+}
+}
+return o;
+}
+
+function islogin() {
+
+var html = getJson("/token/index?method=index&class=LuaAction&function=userislogin");
+if (html) {
+if (html.codeString == "true") {
+user = html.object;
+
+} else {
+location.href = "mobile.html";
+}
+} else {
+location.href = "mobile.html";
+}
+}
+function updatebeizhu(){
+
+ob=GJson("/token/index?method=index&class=UserAction&function=getBeizhus",{});
+$(".con5").html("");
+if(ob.codeString=="true")     {
+
+for(var j=0;j<ob.object.length;j++){
+var obj=ob.object[j];
+ht='               <div class="aui-card-list" object="beizhu'+obj.id+'" >\
+<div class="aui-card-list-header" >\
+<p object="name"> 微信</p><a onclick="delbeizhu('+obj.id+')"  class="aui-btn aui-btn-danger">删除</a>\
+</div>\
+</div>';
+$(".con5").append(ht);
+setobject({name:obj.beizhu},'beizhu'+obj.id);
+}
+}
+}
+function delbeizhu(id){
+if(!confirm("确认删除")){
+return;
+}
+ob=GJson("/token/index?method=index&class=UserAction&function=delBeizhu",{id:id});
+alert(ob.msg);
+updatebeizhu();    
+}
+function addbeizhu(){
+
+ob=GJson("/token/index?method=index&class=UserAction&function=addBeizhu",{name:$("#addbeizhu").val()});
+
+alert(ob.msg);
+updatebeizhu(); 
+$("#addbeizhu").val("");   
+}
+    </script>
+
+</html>

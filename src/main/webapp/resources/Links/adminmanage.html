@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="keywords" content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+		<meta name="description" content="">
+		<meta name="author" content="ThemeBucket">
+		<link rel="shortcut icon" href="#" type="image/png">
+
+		<title>AdminX</title>
+		<script src="js/jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/dataTables.bootstrap.css" />
+		<!--icheck-->
+		<link href="js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+		<link href="js/iCheck/skins/square/square.css" rel="stylesheet">
+		<link href="js/iCheck/skins/square/red.css" rel="stylesheet">
+		<link href="js/iCheck/skins/square/blue.css" rel="stylesheet">
+
+		<!--dashboard calendar-->
+		<link href="css/clndr.css" rel="stylesheet">
+
+		<!--Morris Chart CSS -->
+		<link rel="stylesheet" href="js/morris-chart/morris.css">
+
+		<!--common-->
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/style-responsive.css" rel="stylesheet">
+		<link rel="stylesheet" href="../jslib/bootstrap/css/bootstrap-table.css" />
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="js/dataTables.bootstrap.js"></script>
+		<script src="../jslib/bootstrap/js/bootstrap-table.js"></script>
+        <script src="../jslib/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+		<script type="text/javascript"src="../jslib/jquery/jquery.blockUI.js"></script>
+		
+		<script src="js/foundation.js"></script>
+		<script type="text/javascript" src="js/admin2.js"></script>
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+	</head>
+
+	<body class="sticky-header"   style="background-color: #eff0f4;">
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" data-backdrop="static" id="modal">
+			<div class="modal-dialog modal-lg" id="dlg-con" >
+				
+			</div>
+		</div>
+		<section>
+			<!-- left side start-->
+			<div class="left-side sticky-left-side"  style="background-color: #424f63;">
+
+				<!--logo and iconic logo start-->
+				<div class="logo">
+					<a href="#" onclick="history.go(0)" style="font-family: '微软雅黑';padding: 8px;">后台管理端</a>
+				</div>
+
+				<div class="logo-icon text-center">
+					<a href="index.html"><img src="images/logo_icon.png" alt=""></a>
+				</div>
+				<!--logo and iconic logo end-->
+
+				<div class="left-side-inner">
+
+					<!--sidebar nav start-->
+					<ul class="nav nav-pills nav-stacked custom-nav" id="left-menu">
+
+					</ul>
+
+					<!--sidebar nav end-->
+
+				</div>
+			</div>
+			<!-- left side end-->
+
+			<!-- main content start-->
+			<div class="main-content" >
+
+				<!-- header section start-->
+				<div class="header-section">
+
+					<!--toggle button start-->
+					<a class="toggle-btn" onclick="showHtmlItem()"><i class="fa fa-bars"></i></a>
+					<!--toggle button end-->
+
+					<!--notification menu start -->
+					<div class="menu-right">
+						<ul class="notification-menu">
+
+							<li>
+								<a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									<img src="images/photos/user-avatar.png" alt="" / > <i id="c_name">John Doe</i>
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+
+									<li>
+										<a href="#" onclick="logout()"><i class="fa fa-sign-out"></i> Log Out</a>
+									</li>
+								</ul>
+							</li>
+
+						</ul>
+					</div>
+					<!--notification menu end -->
+
+				</div>
+				<!-- header section end-->
+				<div style="position: fixed;left: 240px;top: 0;width: width: 100%;z-index: 101;height: 10px;right: 0;">
+					<div id="load" style="background-color: rgb(66, 79, 99);width: 0%;height: 100%;"></div>
+
+				</div>
+				<div class="page-heading" id="contents">
+
+				</div>
+
+			</div>
+			<!-- main content end-->
+		</section>
+		<script>
+			//图标参考网址:http://fontawesome.dashgame.com/
+		   addMenu("用户管理", "fa-male", "usermanage", "html/usermanage.html"); 
+			
+			addMenu("粉丝管理", "fa-male", "wechatUser", "html/wechatuser.html");
+			addMenu("信息管理", "fa-male", "userMsg", "html/usermsg.html");
+			addMenus("活动管理", "fa-male", ["voteManage"], ["投票管理"],["html/voteManage.html"]);
+			
+			addMenus("设置", 'fa-cog', ["setting"], ["信息设置"], ["html/setting.html"]);
+			(function() {
+				$("#left-menu").append('<li><a  href="#" onclick="showHtmlItem()"><i class="fa fa-refresh"></i> <span>刷新</span></a></li>');
+			})();
+			(function() {
+				$("#left-menu").append('<li><a  href="#" onclick="logout()"><i class="fa fa-sign-in"></i> <span>退出</span></a></li>');
+			})();
+			showHtmlItem();
+			$($(".html-item")[0]).show();
+			$(".xs2").click(function(e){
+				
+				$(".html-item").hide();
+				var th=e.currentTarget;
+				
+				$("#"+$(th).attr("idname")).show();
+				
+			})
+			wlog("菜单输出完毕");
+		</script>
+		<!-- Placed js at the end of the document so the pages load faster -->
+
+		<script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<!--<script src="js/modernizr.min.js"></script>-->
+		<script src="js/jquery.nicescroll.js"></script>
+
+		<!--easy pie chart-->
+		<!--<script src="js/easypiechart/jquery.easypiechart.js"></script>
+		<script src="js/easypiechart/easypiechart-init.js"></script>-->
+
+		<!--Sparkline Chart-->
+		<!--<script src="js/sparkline/jquery.sparkline.js"></script>
+		<script src="js/sparkline/sparkline-init.js"></script>-->
+
+		<!--icheck -->
+		<!--<script src="js/iCheck/jquery.icheck.js"></script>
+		<script src="js/icheck-init.js"></script>-->
+
+		<!-- jQuery Flot Chart-->
+		<!--<script src="js/flot-chart/jquery.flot.js"></script>
+		<script src="js/flot-chart/jquery.flot.tooltip.js"></script>
+		<script src="js/flot-chart/jquery.flot.resize.js"></script>-->
+
+		<!--Morris Chart-->
+		<!--<script src="js/morris-chart/morris.js"></script>
+		<script src="js/morris-chart/raphael-min.js"></script>-->
+
+		<!--Calendar-->
+		<!--<script src="js/calendar/clndr.js"></script>
+		<script src="js/calendar/evnt.calendar.init.js"></script>
+		<script src="js/calendar/moment-2.2.1.js"></script>-->
+		<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+-->
+		<!--common scripts for all pages-->
+		<script src="js/scripts.js"></script>
+
+		<!--Dashboard Charts-->
+		<!--<script src="js/dashboard-chart-init.js"></script>-->
+
+	</body>
+
+</html>

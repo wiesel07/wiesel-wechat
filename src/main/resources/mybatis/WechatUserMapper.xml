@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wiesel.wechat.mapper.WechatUserMapper" >
+  <resultMap id="BaseResultMap" type="wiesel.wechat.entity.WechatUser" >
+    <id column="OPENID" property="openid" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="CHAR" />
+    <result column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="INTEGER" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="COUNTRY" property="country" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="SUBSCRIBE_TIME" property="subscribeTime" jdbcType="BIGINT" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WECHAT_USER
+    where OPENID = #{openid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="wiesel.wechat.entity.WechatUser" >
+    insert into WECHAT_USER (OPENID, CREATE_TIME, NICKNAME, 
+      SEX, CITY, COUNTRY, 
+      PROVINCE, SUBSCRIBE_TIME, REMARK
+      )
+    values (#{openid,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}, #{nickname,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=INTEGER}, #{city,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{subscribeTime,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.WechatUser" >
+    update WECHAT_USER
+    set CREATE_TIME = #{createTime,jdbcType=CHAR},
+      NICKNAME = #{nickname,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=INTEGER},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      SUBSCRIBE_TIME = #{subscribeTime,jdbcType=BIGINT},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where OPENID = #{openid,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select OPENID, CREATE_TIME, NICKNAME, SEX, CITY, COUNTRY, PROVINCE, SUBSCRIBE_TIME, 
+    REMARK
+    from WECHAT_USER
+    where OPENID = #{openid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select OPENID, CREATE_TIME, NICKNAME, SEX, CITY, COUNTRY, PROVINCE, SUBSCRIBE_TIME, 
+    REMARK
+    from WECHAT_USER
+  </select>
+</mapper>

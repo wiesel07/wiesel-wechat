@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/dataTables.bootstrap.css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="js/dataTables.bootstrap.js"></script>
+		<script type="text/javascript" src="js/foundation.js"></script>
+		<title>登录</title>
+	</head>
+	<script>
+		function login(){
+			var obj=getObject("user");
+			var o=postJson("index?m=Login.userLogin",obj);
+			//wlog(o);
+			if(o.code==200){
+				location.href="user.html";
+			}else{
+				alert(o.msg);
+			}
+		}
+	</script>
+	<style>
+		.tip{
+			color:$f00;
+		}
+	</style>
+	<body>
+		<div class="container" id="adddiv">
+			<h2>用户登录</h2>
+			<div class="row" object="user">
+				
+				<div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2">帐号</label>
+
+					<input id="name" type="text" style="width: 350px;" object="name" class="w form-control  form-inline w" />
+					<small style="color: #f00;"></small>
+				</div>
+				
+				<div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2">密码</label>
+
+					<input id="pswd" type="text" style="width: 350px;" object="password" class="w form-control  form-inline w" />
+					<small style="color: #f00;"></small>
+				</div>
+				
+				<button onclick="login()" class="btn col-lg-offset-2">登录</button>
+				
+			</div>
+		</div>
+	</body>
+
+</html>

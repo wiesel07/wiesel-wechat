@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wiesel.wechat.mapper.VoteMapper" >
+  <resultMap id="BaseResultMap" type="wiesel.wechat.entity.Vote" >
+    <id column="VOTE_ID" property="voteId" jdbcType="VARCHAR" />
+    <result column="VOTE_TITLE" property="voteTitle" jdbcType="VARCHAR" />
+    <result column="START_DATE" property="startDate" jdbcType="VARCHAR" />
+    <result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
+    <result column="VOTE_ACCOUNT" property="voteAccount" jdbcType="VARCHAR" />
+    <result column="VOTE_IMAGE" property="voteImage" jdbcType="VARCHAR" />
+    <result column="VOTE_MUSIC" property="voteMusic" jdbcType="VARCHAR" />
+    <result column="VOTE_TYPE" property="voteType" jdbcType="VARCHAR" />
+    <result column="ANONYMITY_FLAG" property="anonymityFlag" jdbcType="INTEGER" />
+    <result column="VALID_DAY" property="validDay" jdbcType="VARCHAR" />
+    <result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" />
+    <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from VOTE
+    where VOTE_ID = #{voteId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="wiesel.wechat.entity.Vote" >
+    insert into VOTE (VOTE_ID, VOTE_TITLE, START_DATE, 
+      END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, 
+      VOTE_MUSIC, VOTE_TYPE, ANONYMITY_FLAG, 
+      VALID_DAY, FILE_PATH, FILE_NAME
+      )
+    values (#{voteId,jdbcType=VARCHAR}, #{voteTitle,jdbcType=VARCHAR}, #{startDate,jdbcType=VARCHAR}, 
+      #{endDate,jdbcType=VARCHAR}, #{voteAccount,jdbcType=VARCHAR}, #{voteImage,jdbcType=VARCHAR}, 
+      #{voteMusic,jdbcType=VARCHAR}, #{voteType,jdbcType=VARCHAR}, #{anonymityFlag,jdbcType=INTEGER}, 
+      #{validDay,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.Vote" >
+    update VOTE
+    set VOTE_TITLE = #{voteTitle,jdbcType=VARCHAR},
+      START_DATE = #{startDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      VOTE_ACCOUNT = #{voteAccount,jdbcType=VARCHAR},
+      VOTE_IMAGE = #{voteImage,jdbcType=VARCHAR},
+      VOTE_MUSIC = #{voteMusic,jdbcType=VARCHAR},
+      VOTE_TYPE = #{voteType,jdbcType=VARCHAR},
+      ANONYMITY_FLAG = #{anonymityFlag,jdbcType=INTEGER},
+      VALID_DAY = #{validDay,jdbcType=VARCHAR},
+      FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      FILE_NAME = #{fileName,jdbcType=VARCHAR}
+    where VOTE_ID = #{voteId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select VOTE_ID, VOTE_TITLE, START_DATE, END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, VOTE_MUSIC, 
+    VOTE_TYPE, ANONYMITY_FLAG, VALID_DAY, FILE_PATH, FILE_NAME
+    from VOTE
+    where VOTE_ID = #{voteId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select VOTE_ID, VOTE_TITLE, START_DATE, END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, VOTE_MUSIC, 
+    VOTE_TYPE, ANONYMITY_FLAG, VALID_DAY, FILE_PATH, FILE_NAME
+    from VOTE
+  </select>
+</mapper>

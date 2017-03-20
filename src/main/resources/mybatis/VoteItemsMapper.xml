@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wiesel.wechat.mapper.VoteItemsMapper" >
+  <resultMap id="BaseResultMap" type="wiesel.wechat.entity.VoteItems" >
+    <id column="ITEM_ID" property="itemId" jdbcType="VARCHAR" />
+    <result column="ITEM_ACCOUNT" property="itemAccount" jdbcType="VARCHAR" />
+    <result column="VOTE_ID" property="voteId" jdbcType="VARCHAR" />
+    <result column="VOTE_ITEM" property="voteItem" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from VOTE_ITEMS
+    where ITEM_ID = #{itemId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="wiesel.wechat.entity.VoteItems" >
+    insert into VOTE_ITEMS (ITEM_ID, ITEM_ACCOUNT, VOTE_ID, 
+      VOTE_ITEM)
+    values (#{itemId,jdbcType=VARCHAR}, #{itemAccount,jdbcType=VARCHAR}, #{voteId,jdbcType=VARCHAR}, 
+      #{voteItem,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.VoteItems" >
+    update VOTE_ITEMS
+    set ITEM_ACCOUNT = #{itemAccount,jdbcType=VARCHAR},
+      VOTE_ID = #{voteId,jdbcType=VARCHAR},
+      VOTE_ITEM = #{voteItem,jdbcType=VARCHAR}
+    where ITEM_ID = #{itemId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select ITEM_ID, ITEM_ACCOUNT, VOTE_ID, VOTE_ITEM
+    from VOTE_ITEMS
+    where ITEM_ID = #{itemId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select ITEM_ID, ITEM_ACCOUNT, VOTE_ID, VOTE_ITEM
+    from VOTE_ITEMS
+  </select>
+</mapper>

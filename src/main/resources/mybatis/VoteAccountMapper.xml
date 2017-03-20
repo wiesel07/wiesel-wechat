@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wiesel.wechat.mapper.VoteAccountMapper" >
+  <resultMap id="BaseResultMap" type="wiesel.wechat.entity.VoteAccount" >
+    <id column="ACCOUNT_ID" property="accountId" jdbcType="VARCHAR" />
+    <result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" />
+    <result column="ACCOUNT" property="account" jdbcType="INTEGER" />
+    <result column="OPENID" property="openid" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	   ACCOUNT_ID, ITEM_ID, ACCOUNT, OPENID
+	</sql>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from VOTE_ACCOUNT
+    where ACCOUNT_ID = #{accountId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="wiesel.wechat.entity.VoteAccount" >
+    insert into VOTE_ACCOUNT (ACCOUNT_ID, ITEM_ID, ACCOUNT, 
+      OPENID)
+    values (#{accountId,jdbcType=VARCHAR}, #{itemId,jdbcType=VARCHAR}, #{account,jdbcType=INTEGER}, 
+      #{openid,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.VoteAccount" >
+    update VOTE_ACCOUNT
+    set ITEM_ID = #{itemId,jdbcType=VARCHAR},
+      ACCOUNT = #{account,jdbcType=INTEGER},
+      OPENID = #{openid,jdbcType=VARCHAR}
+    where ACCOUNT_ID = #{accountId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" />
+    from VOTE_ACCOUNT
+    where ACCOUNT_ID = #{accountId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select <include refid="Base_Column_List" />
+    from VOTE_ACCOUNT
+  </select>
+
+ <select id="selectByOpenId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" />
+    from VOTE_ACCOUNT
+    where OPENID = #{openid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByItemId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" />
+    from VOTE_ACCOUNT
+    where ITEM_ID = #{itemId,jdbcType=VARCHAR}
+  </select>
+</mapper>

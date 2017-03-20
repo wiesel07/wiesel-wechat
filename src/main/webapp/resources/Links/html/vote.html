@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>投票</title>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	</head>
+
+	<body>
+		<div id="voteTips" class="aui-tips" id="tips-1">
+			<div class="aui-tips-content aui-ellipsis-1">
+			     <i class="aui-iconfont aui-icon-info"></i>
+				<i class="aui-iconfont aui-icon-warnfill"></i>您还没有选择任何选项！
+			</div>
+	   </div>
+	   
+	<!-- 	<div class="aui-content-padded">
+			<p>AUI 2.0新增了主题皮肤样式，开发者可以通过修改相关属性来自定义主题样式，该演示为测试演示，修改效果并不完全。</p>
+		</div>
+		<div class="aui-content-padded">
+			<div class="aui-btn" tapmode onclick="setSkin()">设置主题</div>
+			<div class="aui-btn aui-btn-info" tapmode onclick="removeSkin()">移除主题</div>
+		</div> -->
+
+		<section id="voteTitle" class="aui-content-padded">
+			<h2>投票标题</h2>
+		</section>
+
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+			<img src="../images/7059.JPG" width="100%" />
+			</div>
+		</div>
+
+		<div  class="aui-content aui-margin-b-15">
+			<ul id="voteItem" class="aui-list">
+				<li id="voteType" class="aui-list-header">
+					投票类型
+				</li>
+				<!-- <li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">text</div>
+						<div class="aui-list-item-right">信息</div>
+					</div>
+				</li>-->
+<!-- 				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">选项一</div>
+						<div class="aui-list-item-right">
+							<input  type="checkbox" class="aui-radio">
+						</div>
+					</div>
+				</li> -->
+			</ul>
+		</div>
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				截止时间<span id="endDate" class="aui-margin-l-5">2015-07-13 22:31</span>
+			</div>
+		</div>
+		
+       <div id="voteSure" onclick="vote(this)" class="aui-btn aui-btn-primary aui-btn-block  aui-btn-sm">投票</div>
+
+</body>
+	<script src="../../jslib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/aui/api.js"></script>
+	<script type="text/javascript" src="../js/aui/aui-dialog.js" ></script>
+	<script type="text/javascript" src="../js/aui/aui-skin.js"></script>
+		<script type="text/javascript" src="../js/foundation.js"></script>
+
+	<script type="text/javascript">
+		apiready = function() {
+			api.parseTapmode();
+		}
+		var openId ="";
+		
+		var openId = GetQueryString("openId");
+		openId ='111222';
+		
+		$("#voteTips").hide();//初始化的时候隐藏消息提示框
+		
+		$.ajax({
+			type:"POST",
+			url:'/wiesel-wechat/core/getVoteMsg',
+			data:{},
+			dataType:"json",
+		    success:function(data){
+					console.log(data);
+			    var votes = data.votes[0];
+				var voteType	= $(votes).prop('voteType');
+				var voteTitle	= $(votes).prop('voteTitle');
+				var endDate	= $(votes).prop('endDate');
+				$("#voteType").text(voteType);
+				$("#voteTitle").text(voteTitle);
+				$("#endDate").text(endDate);
+			//	$("#voteTitle").css({"font-size":"1rem","font-weight":"400"})
+
+				var voteItems = data.voteItems;
+				var len = voteItems.length;
+				var itemVal ="";
+				var itemId ="";
+				for(var i=0;i<len;i++){
+					itemVal = $(voteItems[i]).prop('voteItem');
+					itemId = $(voteItems[i]).prop('itemId');
+					
+ 					$("#voteType").after('<li class="aui-list-item"><div class="aui-list-item-inner">'+
+							'<div class="aui-list-item-title">'+itemVal.trim()+'</div>'+
+							'<div class="aui-list-item-right">'+
+														'<input id='+itemId.trim() +' type="checkbox" onclick="judgeCheckBox(this)" class="aui-radio">'
+													+'</div></div></li>')
+				}
+				
+				var openId = data.openId;
+				console.log(openId);
+			} 
+		});
+		
+		function judgeCheckBox(_self){
+			
+			var voteType = $("#voteType").text();
+			var flag =0;
+			var checkObj =$("#voteItem").find("input[type='checkbox']");
+			var len = checkObj.length;
+			if(voteType=="单选"){
+				 $(checkObj).prop('checked',false);//设置全不选
+			    $(_self).prop("checked", true);//选中当前
+					
+				return; 
+			}
+	        if(voteType=="多选，最多两项"){
+	        	for(var i =0;i<len;i++){
+					if($(checkObj[i]).is(':checked')){
+						flag =flag+1;
+					}
+				}
+				if(flag>2){
+					$(_self).prop("checked", false);
+				}	
+				return;
+			}
+            if(voteType=="多选，无限制"){
+				
+			}
+			
+		}
+		
+		
+		function vote(){
+			console.log(openId);
+			var checkObj =$("#voteItem").find("input[type='checkbox']");
+			var flag = 0;
+			var len = checkObj.length;
+			var itemJson ="";
+			for(var i =0;i<len;i++){
+				if($(checkObj[i]).is(':checked')){
+					 itemJson = itemJson+$(checkObj[i]).prop('id')+"---";
+				}else{
+					flag = flag +1;
+				}
+			}
+			if(flag ==len){
+				$("#voteTips").show();
+				setTimeout(function(){$("#voteTips").hide();},800);
+			}
+			
+			console.log("in");
+			var data ={itemJson:itemJson};
+			$.ajax({
+				type:"POST",
+				url:'/wiesel-wechat/core/doVoteCount',
+				data:data,
+				dataType:"json",
+			    success:function(data){
+						console.log(data);
+				} 
+			});
+			console.log("投票")
+		}
+	
+		function closeTips(){
+			$api.remove($api.byId("tips-1"));
+		}
+		
+	</script>
+
+</html>

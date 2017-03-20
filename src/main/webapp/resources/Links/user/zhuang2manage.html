@@ -1,0 +1,177 @@
+
+<h2>转发朋友圈</h2>
+<button class="btn btn-info" onclick="mydeal.addPage()">添加</button>
+<h6></h6>
+<table  id="chats3table">
+</table>
+
+<div class="modal-content" id="addzhuang2" style="display:none;">
+	<div object="addzhuang2">
+		<div class="modal-header">
+			<h2 id="dlg-title" object="tittle">添加群发</h2>
+		</div>
+		<div class="modal-body">
+			<div class="con">
+				<div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2 col-lg-offset-2">名称</label> 
+					<input
+						type="text" object="content" class="w form-control  form-inline w" />
+					<small style="color: #f00;"></small>
+				</div>
+				<div class="modal-footer">
+					<button type="button" onclick="mydeal.add()"
+						class="btn btn-primary">确认</button>
+					<button onclick="hidedlg()" type="button" class="btn btn-default"
+						data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-content" id="changezhuang3" style="display:none;">
+	<div object="changezhuang3">
+		<div class="modal-header">
+			<h2 id="dlg-title" object="title"></h2>
+		</div>
+		<div class="modal-body">
+			<div class="con">
+				<input type="hidden" id="type" object="userid" />
+				<table  class="table table-bordered table-striped" id="links2s">
+				</table>
+				
+				<div class="modal-footer">
+					<input class="input-group form-inline" type="text" style="width: 300px;" id="links3" />
+					<button type="button" onclick="mydeal.addLink()"
+						class="btn btn-primary">添加</button>
+					<button  onclick="hidedlg()" type="button" class="btn btn-default"
+						data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+//		公众号
+//		头像链接
+//		图文链接
+//		名字
+
+function newZhuang(){
+	var o=new Object();
+	o.init=function(){
+		newTable("chats3table",["id","名称","操作"],
+				["id","name","id"],
+				"index?m=User.getChats3",function(row,data,index){
+					
+					var btn='<button class="btn btn-danger" onclick="mydeal.del('+data.id+')">删除</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(0,'+data.id+')">告知转发</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(1,'+data.id+')">图片链接</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(2,'+data.id+')">转发内容</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(3,'+data.id+')">重要提示</button>';
+					
+					//btn=btn+'&nbsp;<a class="btn btn-info" href="index?m=Admin.downAll&id='+data.id+'">下载信息</a>';
+					
+					setTd(2,btn,row);
+				});
+	};
+	o.addPage=function(){
+		showDlg("#addzhuang2");
+		setObject("addzhuang2",{tittle:"增加引导转发"});
+	};
+	
+	o.change=function(){
+		var o=getObject("changeuser");
+		o.id=o.userid;
+		var obj=GJson("index?m=Admin.changeUser",o);
+		alert(obj.msg);
+		if(obj.code==200){
+			this.init();
+			hidedlg();
+		}
+	}
+	o.add=function(){
+		var o=getObject("addzhuang2");
+		var obj=GJson("index?m=User.addChats3",o);
+		
+		if(obj.code==200){
+			this.init();
+			hidedlg();
+		}
+	}
+	o.del=function(id){
+		if(!confirm("确认删除")){
+			return;
+		}
+		var obj=GJson("index?m=User.delChats3",{id:id});
+		this.init();
+			
+	}
+	o.getLinks=function(type,chatid){
+		showDlg("#changezhuang3");
+		switch(type){//告知转发，图片链接，转发内容，重要提示
+
+			case 0:
+				title="告知转发";
+			break;
+			case 1:
+				title="图片链接";
+			break;
+			case 2:
+				title="转发内容";
+			break;
+			case 3:
+				title="重要提示";
+			break;
+		}
+		setObject("changezhuang3",{title:title});
+		this.showLinks(type,chatid);
+		
+	}
+	o.showLinks=function(type,chatid){
+		var re=GJson("index?m=User.getLinks3",{type:type});
+		$("#links2s").html("");
+		var objs=re.object;
+		for(var j=0;j<objs.length;j++){
+			var obj=objs[j];
+			var ht='<tr><td width="70%"> <textarea id="links3'+obj.id+'" rows="1" cols="20" style="word-break: break-word;">'
+				+obj.content+'</textarea></td><td><button class="btn btn-danger" onclick="mydeal.delLink('+obj.id+')" >删除</button>'+
+				'<button class="btn btn-primary" onclick="mydeal.changeLink('+obj.id+')" >修改</button>'
+				+
+				'<button class="btn btn-info" onmouseout="mydeal.hideVal('+obj.id+')" onmouseover="mydeal.showVal('+obj.id+')" >预览</button>'
+				+'</td></tr>';
+			$("#links2s").append(ht);
+		}
+		this.chatid=chatid;
+		this.type=type;
+	}
+	o.delLink=function(id){
+		GJson("index?m=User.delLink3",{id:id});
+		this.showLinks(this.type,this.chatid);
+	}
+	o.changeLink=function(id){
+		GJson("index?m=User.changeLink3",{content:$("#links3"+id).val(),id:id});
+		this.showLinks(this.type,this.chatid);
+	}
+	o.addLink=function(){
+		var link=$("#links3").val();
+		GJson("index?m=User.addLink3",{content:link,type:this.type,chatsid:this.chatid});
+		
+		this.showLinks(this.type,this.chatid);
+		$("#links3").val("");
+		
+	}
+	o.showVal=function(id){
+		$("body").prepend('<div id="div'+id
+		+'" style="word-break: break-word;padding:5px;position: absolute;color:#000;line-height:25px;font-size:20px;background-color:#fff;\
+		z-index: 9999;width: 400px;top: 0;" >'+
+		$("#links3"+id).val()+'</div>');
+		
+	}
+	o.hideVal=function(id){
+		$("#div"+id).remove();
+	}
+	return o;
+}
+var mydeal = newZhuang();
+mydeal.init();
+</script>

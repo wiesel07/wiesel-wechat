@@ -1,0 +1,196 @@
+
+<h2>下发管理</h2>
+<button class="btn btn-info" style="display: none;" onclick="mydeal.addPage()">添加</button>
+<h6></h6>
+<table  id="chatstable">
+</table>
+
+<div class="modal-content" id="addchat" style="display:none;">
+	<div object="addchat">
+		<div class="modal-header">
+			<h2 id="dlg-title" object="tittle">添加群发</h2>
+		</div>
+		<div class="modal-body">
+			<div class="con">
+				<div class="form-group form-inline col" style="position: relative;">
+					<label class=" col-lg-2 col-lg-offset-2">名称</label> 
+					<input
+						type="text" object="content" class="w form-control  form-inline w" />
+					<small style="color: #f00;"></small>
+				</div>
+				<div class="modal-footer">
+					<button type="button" onclick="mydeal.add()"
+						class="btn btn-primary">确认</button>
+					<button onclick="hidedlg()" type="button" class="btn btn-default"
+						data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-content" id="changechat" style="display:none;">
+	<div object="changechat">
+		<div class="modal-header">
+			<h2 id="dlg-title" object="title"></h2>
+		</div>
+		<div class="modal-body">
+			<div class="con"  >
+				<input type="hidden" id="type" object="userid" />
+				<div style="height: 300px;overflow-y: scroll;"> 
+					<table  class="table table-bordered table-striped" id="links" >
+				</table>
+				</div>
+				
+				
+				<div class="modal-footer">
+					<input class="input-group form-inline" type="text" style="width: 300px;" id="link" />
+					<button type="button" onclick="mydeal.addLink()"
+						class="btn btn-primary">添加</button>
+					<button  onclick="hidedlg()" type="button" class="btn btn-default"
+						data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+//		公众号
+//		头像链接
+//		图文链接
+//		名字
+
+function newQunfa(){
+	var o=new Object();
+	o.init=function(){
+		newTable("chatstable",["名称","操作"],
+				["name","id"],
+				"index?m=User.getLinks",function(row,data,index){
+					var btn='';
+					if(data.type==0){//漂流瓶
+											btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(1,'+data.id+',this)">头像</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(2,'+data.id+',this)">引导语</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(3,'+data.id+',this)">链接1</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(4,'+data.id+',this)">链接2</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(5,'+data.id+',this)">链接3</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(6,'+data.id+',this)">链接4</button>';
+					
+					}else{
+	
+					
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(1,'+data.id+',this)">头像</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(2,'+data.id+',this)">A</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(3,'+data.id+',this)">B</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(4,'+data.id+',this)">C</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(5,'+data.id+',this)">D</button>';
+					btn=btn+'&nbsp;<button class="btn btn-info" onclick="mydeal.getLinks(6,'+data.id+',this)">公众号</button>';
+					
+					}
+					
+					//btn=btn+'&nbsp;<a class="btn btn-info" href="index?m=Admin.downAll&id='+data.id+'">下载信息</a>';
+					
+					setTd(1,btn,row);
+				});
+	};
+	o.addPage=function(){
+		showDlg("#addchat");
+		setObject("addchat",{tittle:"增加群发"});
+	};
+	o.changePage=function(id){
+		showDlg("#changeuser");
+		var obj=GJson("index?m=Admin.getUser",{id:id});
+		obj.object.userid=obj.object.id;
+		obj.object.tittle="修改用户";
+		setObject("changeuser",obj.object);
+	};
+	o.change=function(){
+		var o=getObject("changeuser");
+		o.id=o.userid;
+		var obj=GJson("index?m=Admin.changeUser",o);
+		alert(obj.msg);
+		if(obj.code==200){
+			this.init();
+			hidedlg();
+		}
+	}
+	o.add=function(){
+		var o=getObject("addchat");
+		var obj=GJson("index?m=User.addChats",o);
+		
+		if(obj.code==200){
+			this.init();
+			hidedlg();
+		}
+	}
+	o.del=function(id){
+		if(!confirm("确认删除")){
+			return;
+		}
+		var obj=GJson("index?m=User.delChats",{id:id});
+		this.init();
+			
+	}
+	o.getLinks=function(type,chatid,th){
+		showDlg("#changechat");
+		
+		setObject("changechat",{title:$(th).text()});
+		this.typetext=$(th).text();
+		this.showLinks(type,chatid);
+		
+	}
+	o.showLinks=function(type,chatid){
+		var re=GJson("index?m=User.getUrls",{type:type,id:chatid});
+		$("#links").html("");
+		var objs=re.object;
+		for(var j=0;j<objs.length;j++){
+			var obj=objs[j];
+			var de='<button class="btn btn-danger" onclick="mydeal.delLink('+obj.id+')" >删除</button>';
+			if(this.typetext=="公众号"){
+				de='';
+			}
+			var ht='<tr><td width="70%"> <textarea id="link'+obj.id+'" rows="1" cols="20" style="word-break: break-word;">'
+				+obj.url+'</textarea></td><td>'+de+
+				'<button class="btn btn-primary" onclick="mydeal.changeLink('+obj.id+')" >修改</button>'
+				+
+				'<button class="btn btn-info" onmouseout="mydeal.hideVal('+obj.id+')" onmouseover="mydeal.showVal('+obj.id+')" >预览</button>'
+				+'</td></tr>';
+			$("#links").append(ht);
+		}
+		this.chatid=chatid;
+		this.type=type;
+	}
+	o.delLink=function(id){
+		
+		GJson("index?m=User.delUrl",{id:id});
+		this.showLinks(this.type,this.chatid);
+	}
+	o.changeLink=function(id){
+		GJson("index?m=User.changeUrl",{url:$("#link"+id).val(),id:id});
+		this.showLinks(this.type,this.chatid);
+	}
+	o.addLink=function(){
+		if(this.typetext=="公众号"){
+			alert("公众号固定8个，不可删除或者添加，如有出入，请联系管理员")
+			return;
+		}
+		var link=$("#link").val();
+		GJson("index?m=User.addUrl",{url:link,type:this.type,id:this.chatid});
+		
+		this.showLinks(this.type,this.chatid);
+		$("#link").val("");
+		
+	}
+	o.showVal=function(id){
+		$("body").prepend('<div id="div'+id
+		+'" style="word-break: break-word;padding:5px;position: absolute;color:#000;line-height:25px;font-size:20px;background-color:#fff;\
+		z-index: 9999;width: 400px;top: 0;" >'+
+		$("#link"+id).val()+'</div>');
+		
+	}
+	o.hideVal=function(id){
+		$("#div"+id).remove();
+	}
+	return o;
+}
+var mydeal = newQunfa();
+mydeal.init();
+</script>

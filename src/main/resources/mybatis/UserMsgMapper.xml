@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wiesel.wechat.mapper.UserMsgMapper">
+	<resultMap id="BaseResultMap" type="wiesel.wechat.entity.UserMsg">
+		<id column="MSG_ID" jdbcType="VARCHAR" property="msgId" />
+		<result column="OPENID" jdbcType="VARCHAR" property="openid" />
+		<result column="TITLE" jdbcType="VARCHAR" property="title" />
+		<result column="CONTENT" jdbcType="VARCHAR" property="content" />
+		<result column="CREATE_TIME" jdbcType="CHAR" property="createTime" />
+		<result column="STATUS" jdbcType="INTEGER" property="status" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+	   MSG_ID, OPENID, TITLE, CONTENT, CREATE_TIME, STATUS, TYPE
+	</sql>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from USER_MSG
+    where MSG_ID = #{msgId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="wiesel.wechat.entity.UserMsg">
+    insert into USER_MSG (MSG_ID, OPENID, TITLE, 
+      CONTENT, CREATE_TIME, STATUS, 
+      TYPE)
+    values (#{msgId,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.UserMsg">
+    update USER_MSG
+    set OPENID = #{openid,jdbcType=VARCHAR},
+      TITLE = #{title,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=CHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      TYPE = #{type,jdbcType=INTEGER}
+    where MSG_ID = #{msgId,jdbcType=VARCHAR}
+	</update>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select MSG_ID, OPENID, TITLE, CONTENT, CREATE_TIME, STATUS, TYPE
+    from USER_MSG
+    where MSG_ID = #{msgId,jdbcType=VARCHAR}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+    select MSG_ID, OPENID, TITLE, CONTENT, CREATE_TIME, STATUS, TYPE
+    from USER_MSG
+	</select>
+ 
+	<select id="findByType" parameterType="Integer" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+        from USER_MSG where TYPE=#{type}
+	</select>
+
+<!--	<select id="findBarrage" parameterType="Integer" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+        from USER_MSG where TYPE=#{type} and STATUS =#{status}
+	</select>
+	-->
+	
+	<select id="findBarrage" parameterType="wiesel.wechat.entity.UserMsg" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" /> from USER_MSG
+		<where> 1=1
+			<!--  <if test="positionSeq !=null"> AND POSITION_SEQ LIKE '%${positionSeq}%'</if> -->
+			<if test="type != null and type!=''">AND TYPE =#{type} </if> 
+			<if test="status != null and status!=''">AND STATUS =#{status}</if>
+		</where>
+        
+	</select>
+</mapper>
