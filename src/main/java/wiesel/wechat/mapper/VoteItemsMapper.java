@@ -4,13 +4,16 @@ import java.util.List;
 import wiesel.wechat.entity.VoteItems;
 
 public interface VoteItemsMapper {
-    int deleteByPrimaryKey(String itemId);
+	int deleteByPrimaryKey(String itemId);
 
-    int insert(VoteItems record);
+	int insert(VoteItems record);
 
-    VoteItems selectByPrimaryKey(String itemId);
+	VoteItems selectByPrimaryKey(String itemId);
 
-    List<VoteItems> selectAll();
+	List<VoteItems> selectAll();
 
-    int updateByPrimaryKey(VoteItems record);
+	int updateByPrimaryKey(VoteItems record);
+
+	List<VoteItems> selectByVoteId(String voteId);
+
 }

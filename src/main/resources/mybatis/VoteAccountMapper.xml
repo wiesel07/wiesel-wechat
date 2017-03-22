@@ -6,10 +6,11 @@
     <result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" />
     <result column="ACCOUNT" property="account" jdbcType="INTEGER" />
     <result column="OPENID" property="openid" jdbcType="VARCHAR" />
+    <result column="VOTE_TIME" property="voteTime" jdbcType="VARCHAR" />
   </resultMap>
   
   <sql id="Base_Column_List">
-	   ACCOUNT_ID, ITEM_ID, ACCOUNT, OPENID
+	   ACCOUNT_ID, ITEM_ID, ACCOUNT, OPENID,VOTE_TIME
 	</sql>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
@@ -17,16 +18,16 @@
     where ACCOUNT_ID = #{accountId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="wiesel.wechat.entity.VoteAccount" >
-    insert into VOTE_ACCOUNT (ACCOUNT_ID, ITEM_ID, ACCOUNT, 
-      OPENID)
+    insert into VOTE_ACCOUNT (ACCOUNT_ID, ITEM_ID, ACCOUNT,OPENID,VOTE_TIME)
     values (#{accountId,jdbcType=VARCHAR}, #{itemId,jdbcType=VARCHAR}, #{account,jdbcType=INTEGER}, 
-      #{openid,jdbcType=VARCHAR})
+      #{openid,jdbcType=VARCHAR}, #{voteTime,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.VoteAccount" >
     update VOTE_ACCOUNT
     set ITEM_ID = #{itemId,jdbcType=VARCHAR},
       ACCOUNT = #{account,jdbcType=INTEGER},
-      OPENID = #{openid,jdbcType=VARCHAR}
+      OPENID = #{openid,jdbcType=VARCHAR},
+     VOTE_TIME = #{voteTime,jdbcType=VARCHAR}
     where ACCOUNT_ID = #{accountId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >

@@ -72,5 +72,7 @@ public interface WechatUserService {
 	 * @author 作者：wujian
 	 */
 	public List<WechatUser> getWechatUserList();
+	
+	public WechatUser getWechatUser(String openid);
 
 }

@@ -15,8 +15,10 @@ package wiesel.wechat.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,13 +40,18 @@ import wiesel.common.util.CheckUtil;
 import wiesel.common.util.CommonInterfacesUtil;
 import wiesel.common.util.DateUtilsExt;
 import wiesel.common.util.MessageUtil;
+import wiesel.common.util.TulingApiUtil;
 import wiesel.common.util.UUIDTool;
 import wiesel.common.util.WechatInfo;
+import wiesel.message.resp.entity.Article;
+import wiesel.message.resp.entity.NewsMessage;
 import wiesel.message.resp.entity.TextMessage;
 import wiesel.wechat.entity.AccessToken;
 import wiesel.wechat.entity.UserMsg;
+import wiesel.wechat.entity.Vote;
 import wiesel.wechat.entity.WechatUser;
 import wiesel.wechat.service.UserMsgService;
+import wiesel.wechat.service.VoteService;
 import wiesel.wechat.service.WechatUserService;
 
 /**
@@ -62,9 +69,9 @@ public class WeChatController {
 
 	@Autowired
 	private UserMsgService userMsgService;
-	
-	
-	
+
+	@Autowired
+	private VoteService voteService;
 
 	// 发送方帐号（open_id）
 	private String FROM_USER_NAME = "";
@@ -170,7 +177,7 @@ public class WeChatController {
 			String respContent = "请求处理异常，请稍候尝试！";
 			// xml请求解析
 			Map<String, String> requestMap = MessageUtil.parseXml(request);
-			Map<String,String> results = new HashMap<String,String>();
+			Map<String, String> results = new HashMap<String, String>();
 			// 发送方帐号（open_id）
 			FROM_USER_NAME = requestMap.get("FromUserName");
 			// 公众帐号
@@ -191,20 +198,44 @@ public class WeChatController {
 				results = handlText(requestMap);
 				System.out.println(results.get("flag"));
 				if ("1".equalsIgnoreCase(results.get("flag").trim())) {
-					respContent ="成功！";
-					logger.info("1");
-				}else {
-					//respContent = "您发送的是文本消息！";
+					String msgType = results.get("msg".trim());
+
+					if (msgType.equalsIgnoreCase(UserMsg.ORDER_NAME)) {
+						respContent = "点播成功！";
+					}
+					if (msgType.equalsIgnoreCase(UserMsg.BARRAGE_NAME)) {
+						respContent = "弹幕发送成功！";
+					}
+					if (msgType.equalsIgnoreCase(UserMsg.LEAVE_MSG_NAME)) {
+						respContent = "留言成功!";
+					}
+					if (msgType.equalsIgnoreCase(UserMsg.VOTE_NAME)) {
+						Map<String, String> voteMsgResults = handlVoteMsg();
+						if (voteMsgResults.get("flag").equalsIgnoreCase("0")
+								|| voteMsgResults.get("flag").equalsIgnoreCase("1")) {
+							respContent = voteMsgResults.get("msg");
+						}
+						if (voteMsgResults.get("flag").equalsIgnoreCase("2")) {
+							respMessage = voteMsgResults.get("respMessage");
+							logger.info("vote+end");
+							return respMessage;
+						}
+					}
+					logger.info("1+end");
+				} else if ("0".equalsIgnoreCase(results.get("flag").trim())) {
+
 					respContent = results.get("msg".trim());
-					
-					logger.info("2");
+
+				} else if ("2".equalsIgnoreCase(results.get("flag").trim())) {
+					//respContent = "您发送的是文本消息！";
+					respContent = TulingApiUtil.getTulingResult(requestMap.get("Content"));
 				}
 			}
 			// 图片消息
 			else if (MSG_TYPE.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
-				 respContent = "您发送的是图片消息！";
+				respContent = "您发送的是图片消息！";
 				/* textMessage.setContent("[难过] /难过 /::("); */
-				//respContent = "[难过] /难过 /::(";
+				// respContent = "[难过] /难过 /::(";
 			}
 			// 地理位置消息
 			else if (MSG_TYPE.equals(MessageUtil.REQ_MESSAGE_TYPE_LOCATION)) {
@@ -235,38 +266,91 @@ public class WeChatController {
 		return respMessage;
 	}
 
-	private Map<String,String> handlText(Map<String, String> requestMap) {
-		Map<String,String> results = new HashMap<String,String>();
+	private Map<String, String> handlVoteMsg() {
+		Map<String, String> results = new HashMap<String, String>();
+		results.put("flag", "0");
+		results.put("msg", "当前暂无活动可投票!");
+		String respMessage = null;
+		// 创建图文消息
+		NewsMessage newsMessage = new NewsMessage();
+		newsMessage.setToUserName(FROM_USER_NAME);
+		newsMessage.setFromUserName(TO_USER_NAME);
+		newsMessage.setCreateTime(new Date().getTime());
+		newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
+		newsMessage.setFuncFlag(0);
+
+		List<Article> articleList = new ArrayList<Article>();
+
+		List<Vote> votesList = voteService.getVoteListByStatus();
+		if (votesList == null || votesList.size()<1) {
+			results.put("msg", "当前暂无活动可投票!");
+			results.put("flag", "1");
+		} else {
+
+			Article article = new Article();
+			for (Vote vote : votesList) {
+				article.setTitle(vote.getVoteTitle());
+				article.setDescription("");
+				if (vote.getFilePath() == null || vote.getFilePath() == "") {
+					article.setPicUrl("");
+				} else {
+					article.setPicUrl(
+							"http://160226y11p.iok.la/wiesel-wechat/upload/6adaa92729134d5ea81d8319dbb45971IMG_7059.JPG");
+				}
+
+				article.setUrl("http://160226y11p.iok.la/wiesel-wechat/core/vote?openId=" + FROM_USER_NAME
+						+ "&voteId=" + vote.getVoteId());
+				
+				articleList.add(article);
+			}
+
+			newsMessage.setArticleCount(articleList.size());
+			newsMessage.setArticles(articleList);
+			respMessage = MessageUtil.newsMessageToXml(newsMessage);
+
+			results.put("flag", "2");
+			results.put("respMessage", respMessage);
+			return results;
+		}
+
+	
+		return results;
+	}
+
+	private Map<String, String> handlText(Map<String, String> requestMap) {
+		Map<String, String> results = new HashMap<String, String>();
 		results.put("flag", "1");
 		String content = requestMap.get("Content");
 
-		
 		if (content.contains("+")) {
 			String[] arrs = content.split("[+]");
 			UserMsg userMsg = new UserMsg();
 			userMsg.setOpenid(FROM_USER_NAME);
 			userMsg.setMsgId(UUIDTool.getUUID());
 			userMsg.setStatus(1);
-			
+
 			if ("投票".equalsIgnoreCase(arrs[0].trim())) {
 				if (arrs.length == 1) {
-				
+
 					userMsg.setTitle(UserMsg.VOTE_NAME);
 					userMsg.setType(UserMsg.VOTE);
 					userMsg.setCreateTime(DateUtilsExt.getNowDateTime());
 					userMsgService.doInsert(userMsg);// 新增
-					logger.info("3");
+					logger.info("3+投票");
+
+					results.put("msg", UserMsg.VOTE_NAME);
 					return results;
 
 				} else {
 					results.put("flag", "0");
 					results.put("msg", "发送投票请按如下格式：投票+");
-					logger.info("4");
+					logger.info("4+投票错误");
 					return results;
 				}
 			}
-			logger.info("5");
+
 			if ("留言".equalsIgnoreCase(arrs[0].trim())) {
+				logger.info("5+留言");
 				userMsg.setType(UserMsg.LEAVE_MSG);
 				if (arrs.length == 2) {
 					userMsg.setTitle(UserMsg.LEAVE_MSG_NAME);
@@ -275,9 +359,10 @@ public class WeChatController {
 					userMsg.setContent(arrs[1]);
 					userMsgService.doInsert(userMsg);// 新增
 
+					results.put("msg", UserMsg.LEAVE_MSG_NAME);
 					return results;
 				} else {
-					results.put("flag","0");
+					results.put("flag", "0");
 					results.put("msg", "发送留言请按如下格式：留言+xxx(想要说的话)");
 					return results;
 				}
@@ -290,9 +375,11 @@ public class WeChatController {
 					userMsg.setCreateTime(DateUtilsExt.getNowDateTime());
 					userMsg.setContent(arrs[1]);
 					userMsgService.doInsert(userMsg);// 新增
+
+					results.put("msg", UserMsg.BARRAGE_NAME);
 					return results;
 				} else {
-					results.put("flag","0");
+					results.put("flag", "0");
 					results.put("msg", "发送弹幕请按如下格式：弹幕+xxx(想要说的话)");
 					return results;
 				}
@@ -312,6 +399,7 @@ public class WeChatController {
 
 					userMsgService.doInsert(userMsg);// 新增
 
+					results.put("msg", UserMsg.ORDER_NAME);
 					return results;
 				} else {
 					results.put("flag", "0");
@@ -326,8 +414,8 @@ public class WeChatController {
 			results.put("flag", "0");
 			return results;
 		}
-		
-		results.put("flag", "0");
+
+		results.put("flag", "2");// 自定义消息
 		return results;
 	}
 
@@ -347,9 +435,9 @@ public class WeChatController {
 	 * @date 创建时间：2017年3月13日
 	 * @author 作者：wujian
 	 */
-	private Map<String,String> handleEvent(Map<String, String> requestMap) {
+	private Map<String, String> handleEvent(Map<String, String> requestMap) {
 
-		Map<String,String> results = new HashMap<String,String>();
+		Map<String, String> results = new HashMap<String, String>();
 		// 事件类型
 		String eventType = requestMap.get("Event");
 

@@ -30,6 +30,10 @@ public interface VoteService {
   
   public List<Vote> getVoteList();
   
+  public List<Vote> getVoteListByStatus();
+  
+  public Vote getVote(String voteId);
+  
   public List<VoteItems> getVoteItemsList();
   
   public int doInsertVoteCount (List<VoteAccount> voteAccountList);
@@ -65,4 +69,6 @@ public interface VoteService {
   public VoteAccount getVoteAccountByOpenid(String openid);
   
   public List<VoteAccount> getVoteAccountByItemId(String itemId);
+  
+	public List<VoteItems> getVoteItemsListByVoteId(String voteId);
 }

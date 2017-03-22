@@ -14,5 +14,6 @@ public interface VoteMapper {
 
 	int updateByPrimaryKey(Vote record);
 
+	List<Vote> selectByStatus(Vote vote);
 
 }

@@ -47,6 +47,7 @@ public class VoteServiceImpl implements VoteService {
 	@Autowired
 	private VoteAccountMapper voteAccountMapper;
 	
+	
 	@Override
 	@Transactional
 	public void doInsert(Vote vote, List<VoteItems> voteItems){
@@ -101,4 +102,23 @@ public class VoteServiceImpl implements VoteService {
 		return voteAccountMapper.selectByItemId(itemId);
 	}
 
+	@Override
+	public Vote getVote(String voteId) {
+		
+		return voteMapper.selectByPrimaryKey(voteId);
+	}
+
+	@Override
+	public List<VoteItems> getVoteItemsListByVoteId(String voteId) {
+		
+		return voteItemsMapper.selectByVoteId(voteId);
+	}
+
+	@Override
+	public List<Vote> getVoteListByStatus() {
+		// TODO Auto-generated method stub
+		Vote vote = new Vote();
+		vote.setStatus(1);
+		return voteMapper.selectByStatus(vote);
+	}
 }

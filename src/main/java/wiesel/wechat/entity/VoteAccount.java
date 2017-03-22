@@ -21,7 +21,22 @@ public class VoteAccount {
      */
     private String openid;
 
-    public String getAccountId() {
+    /**
+     * 投票时间
+     */
+    private String voteTime;
+    
+    
+    
+    public String getVoteTime() {
+		return voteTime;
+	}
+
+	public void setVoteTime(String voteTime) {
+		this.voteTime = voteTime;
+	}
+
+	public String getAccountId() {
         return accountId;
     }
 

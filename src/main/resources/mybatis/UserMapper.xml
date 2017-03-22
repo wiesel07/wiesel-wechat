@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wiesel.wechat.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="wiesel.wechat.entity.User" >
+    <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="PHONE_NUM" property="phoneNum" jdbcType="VARCHAR" />
+    <result column="USER_MAIL" property="userMail" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="INTEGER" />
+    <result column="USER_TYPE" property="userType" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from USER
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="wiesel.wechat.entity.User" >
+    insert into USER (USER_ID, USER_NAME, PASSWORD, 
+      PHONE_NUM, USER_MAIL, SEX, 
+      USER_TYPE, CREATE_TIME)
+    values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{phoneNum,jdbcType=VARCHAR}, #{userMail,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
+      #{userType,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.User" >
+    update USER
+    set USER_NAME = #{userName,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      PHONE_NUM = #{phoneNum,jdbcType=VARCHAR},
+      USER_MAIL = #{userMail,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=INTEGER},
+      USER_TYPE = #{userType,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select USER_ID, USER_NAME, PASSWORD, PHONE_NUM, USER_MAIL, SEX, USER_TYPE, CREATE_TIME
+    from USER
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select USER_ID, USER_NAME, PASSWORD, PHONE_NUM, USER_MAIL, SEX, USER_TYPE, CREATE_TIME
+    from USER
+  </select>
+</mapper>

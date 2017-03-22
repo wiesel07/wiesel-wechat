@@ -18,7 +18,7 @@ package wiesel.message.req.entity;
  *
  * @author wujian (mailto:wujian@bosssoft.com.cn)
  */
-public class Article {
+public class Article{
 	// 图文消息名称
 	private String Title;
 

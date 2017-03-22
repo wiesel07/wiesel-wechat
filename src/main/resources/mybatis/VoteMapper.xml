@@ -14,7 +14,12 @@
     <result column="VALID_DAY" property="validDay" jdbcType="VARCHAR" />
     <result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" />
     <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
   </resultMap>
+  <sql id="Base_Column_List">
+       VOTE_ID, VOTE_TITLE, START_DATE, END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, VOTE_MUSIC, 
+    VOTE_TYPE, ANONYMITY_FLAG, VALID_DAY, FILE_PATH, FILE_NAME,STATUS
+	</sql>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from VOTE
     where VOTE_ID = #{voteId,jdbcType=VARCHAR}
@@ -23,12 +28,12 @@
     insert into VOTE (VOTE_ID, VOTE_TITLE, START_DATE, 
       END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, 
       VOTE_MUSIC, VOTE_TYPE, ANONYMITY_FLAG, 
-      VALID_DAY, FILE_PATH, FILE_NAME
+      VALID_DAY, FILE_PATH, FILE_NAME,STATUS
       )
     values (#{voteId,jdbcType=VARCHAR}, #{voteTitle,jdbcType=VARCHAR}, #{startDate,jdbcType=VARCHAR}, 
       #{endDate,jdbcType=VARCHAR}, #{voteAccount,jdbcType=VARCHAR}, #{voteImage,jdbcType=VARCHAR}, 
       #{voteMusic,jdbcType=VARCHAR}, #{voteType,jdbcType=VARCHAR}, #{anonymityFlag,jdbcType=INTEGER}, 
-      #{validDay,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}
+      #{validDay,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},#{status,jdbcType=INTEGER}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.Vote" >
@@ -43,18 +48,22 @@
       ANONYMITY_FLAG = #{anonymityFlag,jdbcType=INTEGER},
       VALID_DAY = #{validDay,jdbcType=VARCHAR},
       FILE_PATH = #{filePath,jdbcType=VARCHAR},
-      FILE_NAME = #{fileName,jdbcType=VARCHAR}
+      FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=INTEGER}
     where VOTE_ID = #{voteId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select VOTE_ID, VOTE_TITLE, START_DATE, END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, VOTE_MUSIC, 
-    VOTE_TYPE, ANONYMITY_FLAG, VALID_DAY, FILE_PATH, FILE_NAME
+    select <include refid="Base_Column_List" />
     from VOTE
     where VOTE_ID = #{voteId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select VOTE_ID, VOTE_TITLE, START_DATE, END_DATE, VOTE_ACCOUNT, VOTE_IMAGE, VOTE_MUSIC, 
-    VOTE_TYPE, ANONYMITY_FLAG, VALID_DAY, FILE_PATH, FILE_NAME
+    select <include refid="Base_Column_List" />
     from VOTE
   </select>
+    <select id="selectByStatus" resultMap="BaseResultMap" parameterType="wiesel.wechat.entity.Vote" >
+    select <include refid="Base_Column_List" />
+    from VOTE WHERE STATUS=#{status}
+  </select>
+ 
 </mapper>

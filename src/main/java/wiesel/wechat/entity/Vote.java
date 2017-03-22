@@ -1,159 +1,173 @@
 package wiesel.wechat.entity;
 
 public class Vote {
-    /**
-     * 投票ID(唯一标识)
-     */
-    private String voteId;
+	/**
+	 * 投票ID(唯一标识)
+	 */
+	private String voteId;
 
-    /**
-     * 投票标题
-     */
-    private String voteTitle;
+	/**
+	 * 投票标题
+	 */
+	private String voteTitle;
 
-    /**
-     * 开始时间（目前暂定页面不显示）
-     */
-    private String startDate;
+	/**
+	 * 开始时间（目前暂定页面不显示）
+	 */
+	private String startDate;
 
-    /**
-     * 结束时间
-     */
-    private String endDate;
+	/**
+	 * 结束时间
+	 */
+	private String endDate;
 
-    /**
-     * 投票说明
-     */
-    private String voteAccount;
+	/**
+	 * 投票说明
+	 */
+	private String voteAccount;
 
-    /**
-     * 图片
-     */
-    private String voteImage;
+	/**
+	 * 图片
+	 */
+	private String voteImage;
 
-    /**
-     * 音乐
-     */
-    private String voteMusic;
+	/**
+	 * 音乐
+	 */
+	private String voteMusic;
 
-    /**
-     * 单选，多选（最多两项），多选（无限制）
-     */
-    private String voteType;
+	/**
+	 * 单选，多选（最多两项），多选（无限制）
+	 */
+	private String voteType;
 
-    /**
-     * 匿名状态（1-匿名 ，0-不匿名）
-     */
-    private Integer anonymityFlag;
+	/**
+	 * 匿名状态（1-匿名 ，0-不匿名）
+	 */
+	private Integer anonymityFlag;
 
-    /**
-     * 有效天数
-     */
-    private String validDay;
+	/**
+	 * 有效天数
+	 */
+	private String validDay;
 
-    /**
-     * 图片路径
-     */
-    private String filePath;
+	/**
+	 * 图片路径
+	 */
+	private String filePath;
 
-    /**
-     * 图片名称
-     */
-    private String fileName;
+	/**
+	 * 图片名称
+	 */
+	private String fileName;
 
-    public String getVoteId() {
-        return voteId;
-    }
+	/**
+	 * 状态
+	 */
+	private Integer status;
 
-    public void setVoteId(String voteId) {
-        this.voteId = voteId;
-    }
+	
+	public Integer getStatus() {
+		return status;
+	}
 
-    public String getVoteTitle() {
-        return voteTitle;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-    public void setVoteTitle(String voteTitle) {
-        this.voteTitle = voteTitle;
-    }
+	public String getVoteId() {
+		return voteId;
+	}
 
-    public String getStartDate() {
-        return startDate;
-    }
+	public void setVoteId(String voteId) {
+		this.voteId = voteId;
+	}
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
+	public String getVoteTitle() {
+		return voteTitle;
+	}
 
-    public String getEndDate() {
-        return endDate;
-    }
+	public void setVoteTitle(String voteTitle) {
+		this.voteTitle = voteTitle;
+	}
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
+	public String getStartDate() {
+		return startDate;
+	}
 
-    public String getVoteAccount() {
-        return voteAccount;
-    }
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
 
-    public void setVoteAccount(String voteAccount) {
-        this.voteAccount = voteAccount;
-    }
+	public String getEndDate() {
+		return endDate;
+	}
 
-    public String getVoteImage() {
-        return voteImage;
-    }
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
 
-    public void setVoteImage(String voteImage) {
-        this.voteImage = voteImage;
-    }
+	public String getVoteAccount() {
+		return voteAccount;
+	}
 
-    public String getVoteMusic() {
-        return voteMusic;
-    }
+	public void setVoteAccount(String voteAccount) {
+		this.voteAccount = voteAccount;
+	}
 
-    public void setVoteMusic(String voteMusic) {
-        this.voteMusic = voteMusic;
-    }
+	public String getVoteImage() {
+		return voteImage;
+	}
 
-    public String getVoteType() {
-        return voteType;
-    }
+	public void setVoteImage(String voteImage) {
+		this.voteImage = voteImage;
+	}
 
-    public void setVoteType(String voteType) {
-        this.voteType = voteType;
-    }
+	public String getVoteMusic() {
+		return voteMusic;
+	}
 
-    public Integer getAnonymityFlag() {
-        return anonymityFlag;
-    }
+	public void setVoteMusic(String voteMusic) {
+		this.voteMusic = voteMusic;
+	}
 
-    public void setAnonymityFlag(Integer anonymityFlag) {
-        this.anonymityFlag = anonymityFlag;
-    }
+	public String getVoteType() {
+		return voteType;
+	}
 
-    public String getValidDay() {
-        return validDay;
-    }
+	public void setVoteType(String voteType) {
+		this.voteType = voteType;
+	}
 
-    public void setValidDay(String validDay) {
-        this.validDay = validDay;
-    }
+	public Integer getAnonymityFlag() {
+		return anonymityFlag;
+	}
 
-    public String getFilePath() {
-        return filePath;
-    }
+	public void setAnonymityFlag(Integer anonymityFlag) {
+		this.anonymityFlag = anonymityFlag;
+	}
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+	public String getValidDay() {
+		return validDay;
+	}
 
-    public String getFileName() {
-        return fileName;
-    }
+	public void setValidDay(String validDay) {
+		this.validDay = validDay;
+	}
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 }

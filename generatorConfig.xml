@@ -35,7 +35,7 @@
 	
 		<javaClientGenerator targetPackage="wiesel.wechat.mapper" targetProject=".\src\main\java" type="XMLMAPPER" />
 
-		<table tableName="VOTE_ACCOUNT"  enableCountByExample="true"  enableDeleteByExample="true"
+		<table tableName="USER"  enableCountByExample="true"  enableDeleteByExample="true"
 			enableSelectByExample="true" enableUpdateByExample="true" >
 			<generatedKey column="id" sqlStatement="Mysql" identity="true"	/>
 		</table>

@@ -7,6 +7,11 @@
     <result column="VOTE_ID" property="voteId" jdbcType="VARCHAR" />
     <result column="VOTE_ITEM" property="voteItem" jdbcType="VARCHAR" />
   </resultMap>
+  
+  <sql id="Base_Column_List">
+         ITEM_ID, ITEM_ACCOUNT, VOTE_ID, VOTE_ITEM
+	</sql>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from VOTE_ITEMS
     where ITEM_ID = #{itemId,jdbcType=VARCHAR}
@@ -25,12 +30,18 @@
     where ITEM_ID = #{itemId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select ITEM_ID, ITEM_ACCOUNT, VOTE_ID, VOTE_ITEM
+    select <include refid="Base_Column_List" />
     from VOTE_ITEMS
     where ITEM_ID = #{itemId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select ITEM_ID, ITEM_ACCOUNT, VOTE_ID, VOTE_ITEM
+    select <include refid="Base_Column_List" />
     from VOTE_ITEMS
+  </select>
+  
+    <select id="selectByVoteId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" />
+    from VOTE_ITEMS
+    where VOTE_ID = #{voteId,jdbcType=VARCHAR}
   </select>
 </mapper>

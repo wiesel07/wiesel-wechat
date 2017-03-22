@@ -49,6 +49,12 @@ public class WechatUserServiceImpl implements WechatUserService {
 		// TODO Auto-generated method stub
 		return wechatUserMapper.selectAll();
 	}
+
+	@Override
+	public WechatUser getWechatUser(String openid) {
+		// TODO Auto-generated method stub
+		return wechatUserMapper.selectByPrimaryKey(openid);
+	}
 	
 
 }

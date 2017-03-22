@@ -6,7 +6,7 @@
 		<result column="OPENID" jdbcType="VARCHAR" property="openid" />
 		<result column="TITLE" jdbcType="VARCHAR" property="title" />
 		<result column="CONTENT" jdbcType="VARCHAR" property="content" />
-		<result column="CREATE_TIME" jdbcType="CHAR" property="createTime" />
+		<result column="CREATE_TIME" jdbcType="VARCHAR" property="createTime" />
 		<result column="STATUS" jdbcType="INTEGER" property="status" />
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 	</resultMap>
@@ -24,7 +24,7 @@
       CONTENT, CREATE_TIME, STATUS, 
       TYPE)
     values (#{msgId,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
       #{type,jdbcType=INTEGER})
 	</insert>
 	<update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.UserMsg">
@@ -32,7 +32,7 @@
     set OPENID = #{openid,jdbcType=VARCHAR},
       TITLE = #{title,jdbcType=VARCHAR},
       CONTENT = #{content,jdbcType=VARCHAR},
-      CREATE_TIME = #{createTime,jdbcType=CHAR},
+      CREATE_TIME = #{createTime,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=INTEGER},
       TYPE = #{type,jdbcType=INTEGER}
     where MSG_ID = #{msgId,jdbcType=VARCHAR}

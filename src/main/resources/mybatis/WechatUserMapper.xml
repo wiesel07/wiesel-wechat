@@ -3,7 +3,7 @@
 <mapper namespace="wiesel.wechat.mapper.WechatUserMapper" >
   <resultMap id="BaseResultMap" type="wiesel.wechat.entity.WechatUser" >
     <id column="OPENID" property="openid" jdbcType="VARCHAR" />
-    <result column="CREATE_TIME" property="createTime" jdbcType="CHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
     <result column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
     <result column="SEX" property="sex" jdbcType="INTEGER" />
     <result column="CITY" property="city" jdbcType="VARCHAR" />
@@ -21,14 +21,14 @@
       SEX, CITY, COUNTRY, 
       PROVINCE, SUBSCRIBE_TIME, REMARK
       )
-    values (#{openid,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}, #{nickname,jdbcType=VARCHAR}, 
+    values (#{openid,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
       #{sex,jdbcType=INTEGER}, #{city,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, 
       #{province,jdbcType=VARCHAR}, #{subscribeTime,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="wiesel.wechat.entity.WechatUser" >
     update WECHAT_USER
-    set CREATE_TIME = #{createTime,jdbcType=CHAR},
+    set CREATE_TIME = #{createTime,jdbcType=VARCHAR},
       NICKNAME = #{nickname,jdbcType=VARCHAR},
       SEX = #{sex,jdbcType=INTEGER},
       CITY = #{city,jdbcType=VARCHAR},

@@ -1,4 +1,5 @@
 
+
 <div class="table-responsive">
     <div id="toolbar_userManage" class="btn-group">
 	   <!--  <button type="button" class="btn btn-default">
@@ -29,109 +30,245 @@
 	    <tr>
 	        <th  data-checkbox="true" >Index</th>
 	        <th data-field="userName" data-sortable="true"  data-align="center">用户名</th>
-	        <th data-field="password" data-sortable="true"   data-align="center">密码</th>
+	        <th data-field="sex" data-sortable="true" data-formatter="sexFormatterUser"  data-align="center">性别</th>
 	        <th data-field="phoneNumber" data-sortable="true" data-align="center">电话号码</th>
-			<th data-field="action" data-formatter="actionFormatter" data-align="center" data-events="actionEvents">操作</th>
+	        <th data-field="userMail" data-sortable="true" data-align="center">邮箱</th>
+	        <th data-field="createTime" data-sortable="true" data-align="center">创建时间</th>
+			<th data-field="action" data-formatter="actionFormatterUser" data-align="center" data-events="actionEventsUser">操作</th>
 		</tr>
 	    </thead>
 	</table>
   </div>	
   
+   
+    <div class="modal fade" tabindex="-1" id="myModal">
+		<div class="modal-dialog">
+			<div class="modal-content" style="left:-130px">
 
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">
+						<b id="title">操作提示</b>
+					</h4>
+				</div>
+
+				<div class="modal-body"></div>
+
+				<div class="modal-footer">
+					<button id="userSave" class="btn btn-primary">确定</button>
+					<button class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+
+<script src="../../jslib/jquery/jquery.min.js"></script>
 <script type="text/javascript">
 $('#table_userManage').bootstrapTable({
     url: '/wiesel-wechat/core/queryUserPage'
 }); 
 
-
+//刷新用户
+function refershUserData(){
+	$('#table_userManage').bootstrapTable('refresh', '/wiesel-wechat/core/queryUserPage');
+}
 
 
 function runningFormatter(value, row, index) {
     return index+1;
 };
 
-function actionFormatter(value, row, index) {
+function sexFormatterUser(value) {
+
+	console.log("in")
+	if(value==1){
+    	return "男";
+    }else if(value==2){
+    	return "女";
+    }else{
+    	
+    	return "";
+    }
+};
+
+function actionFormatterUser(value, row, index) {
     return [
-        '<a class="like" href="javascript:void(0)" title="Like">',
-        '<i class="glyphicon glyphicon-heart"></i>',
-        '</a>',
-        '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
+        '<a class="editUser ml10" href="javascript:void(0)" title="Edit">',
         '<i class="glyphicon glyphicon-edit"></i>',
         '</a>',
-        '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+        '<a class="removeUser ml10" href="javascript:void(0)" title="Remove">',
         '<i class="glyphicon glyphicon-remove"></i>',
         '</a>'
     ].join('');
 };
 
-window.actionEvents = {
-    'click .like': function (e, value, row, index) {
-        alert('You click like icon, row: ' + JSON.stringify(row));
+window.actionEventsUser = {
+    'click .editUser': function (e, value, row, index) {
+       updateUser(row);
         console.log(value, row, index);
     },
-    'click .edit': function (e, value, row, index) {
-        alert('You click edit icon, row: ' + JSON.stringify(row));
-        console.log(value, row, index);
-    },
-    'click .remove': function (e, value, row, index) {
-        alert('You click remove icon, row: ' + JSON.stringify(row));
+    'click .removeUser': function (e, value, row, index) {
+    	console.log("shaNCHUJINRU")
+        delUser(row);
         console.log(value, row, index);
     }
 };
 
-$(function(){
-//	 window.
-//	 var $result = $('#eventsResult');
-//
-//	    $('#eventsTable').on('all.bs.table', function (e, name, args) {
-//	        console.log('Event:', name, ', data:', args);
-//	    })
-//	    .on('click-row.bs.table', function (e, row, $element) {
-//	        $result.text('Event: click-row.bs.table');
-//	    })
-//	    .on('dbl-click-row.bs.table', function (e, row, $element) {
-//	        $result.text('Event: dbl-click-row.bs.table');
-//	    })
-//	    .on('sort.bs.table', function (e, name, order) {
-//	        $result.text('Event: sort.bs.table');
-//	    })
-//	    .on('check.bs.table', function (e, row) {
-//	        $result.text('Event: check.bs.table');
-//	    })
-//	    .on('uncheck.bs.table', function (e, row) {
-//	        $result.text('Event: uncheck.bs.table');
-//	    })
-//	    .on('check-all.bs.table', function (e) {
-//	        $result.text('Event: check-all.bs.table');
-//	    })
-//	    .on('uncheck-all.bs.table', function (e) {
-//	        $result.text('Event: uncheck-all.bs.table');
-//	    })
-//	    .on('load-success.bs.table', function (e, data) {
-//	        $result.text('Event: load-success.bs.table');
-//	    })
-//	    .on('load-error.bs.table', function (e, status) {
-//	        $result.text('Event: load-error.bs.table');
-//	    })
-//	    .on('column-switch.bs.table', function (e, field, checked) {
-//	        $result.text('Event: column-switch.bs.table');
-//	    })
-//	    .on('page-change.bs.table', function (e, number, size) {
-//	        $result.text('Event: page-change.bs.table');
-//	    })
-//	    .on('search.bs.table', function (e, text) {
-//	        $result.text('Event: search.bs.table');
-//	    });
-	
-//	/$('#table').bootstrapTable('load', data);
-});
-</script>
 
-
-
-
-<script>
  function addUser(){
-	 console.log("新增用户")
+	 console.log("新增用户");
+	 
+		/*3：弹出修改用户信息的对话框*/
+		var editURL = "html/addUser.html";
+	
+		showModalFrame('新增用户',editURL,800,430,true);
+		$('#userSave').click(function(){
+			$('#userSave').attr('disabled','disable');//禁用按钮。防止重复提交
+		
+			var addFrame = document.getElementById("modalFrame");	//父窗口获取子窗口的数据。
+							    				
+			var childWindow = addFrame.contentWindow;
+			var formData = childWindow.jQuery("#userForm").serializeArray();//取子窗口整个form的数据
+	
+			/*ajax提交到服务端，服务端进行保存*/
+			var modifyURL = "/wiesel-wechat/core/doInsertUser";
+			$.ajax({
+				type:"POST",
+				url:modifyURL,
+				data:formData,
+				dataType:"json",
+				success:function(data){
+					if(data.flag){
+						$('#myModal').modal('hide');
+						showMsg(data.msg);
+						refershUserData();
+					}
+					else{
+						$.messager.alert("操作提示","操作失败原因="+data.errorMsg,"error",function(){});
+						$('#save').removeAttr('disabled');
+					}
+				}
+			});
+		});
+ }
+
+ 
+ function delUser(row){
+	 console.log("删除用户");
+	 
+			/*ajax提交到服务端，服务端进行保存*/
+			var modifyURL = "/wiesel-wechat/core/doDelUser";
+			$.ajax({
+				type:"POST",
+				url:modifyURL,
+				data:row,
+				dataType:"json",
+				success:function(data){
+					if(data.flag){
+						$('#myModal').modal('hide');
+						showMsg(data.msg);
+						refershUserData()
+					}
+					else{
+						$.messager.alert("操作提示","操作失败原因="+data.errorMsg,"error",function(){});
+						$('#save').removeAttr('disabled');
+					}
+				}
+			});
+ }
+ 
+ function updateUser(row){
+	 console.log("更新用户");
+	 
+	 
+	 /*3：弹出修改用户信息的对话框*/
+		var editURL = "html/updateUser.html";
+	
+		showModalFrame('修改用户',editURL,800,430,true);
+		
+		setTimeout(function(){
+			$('#table_userManage').bootstrapTable('load', row);
+		},3000);//延时3秒 
+		$('#userSave').click(function(){
+			$('#userSave').attr('disabled','disable');//禁用按钮。防止重复提交
+		
+			var addFrame = document.getElementById("modalFrame");	//父窗口获取子窗口的数据。
+							    				
+			var childWindow = addFrame.contentWindow;
+			var formData = childWindow.jQuery("#userForm").serializeArray();//取子窗口整个form的数据
+			/*ajax提交到服务端，服务端进行保存*/
+			var modifyURL = "/wiesel-wechat/core/doUpdateUser";
+			$.ajax({
+				type:"POST",
+				url:modifyURL,
+				data:formData,
+				dataType:"json",
+				success:function(data){
+					if(data.flag){
+						$('#myModal').modal('hide');
+						showMsg(data.msg);
+						refershUserData()
+					}
+					else{
+						$.messager.alert("操作提示","操作失败原因="+data.errorMsg,"error",function(){});
+						$('#save').removeAttr('disabled');
+					}
+				}
+			});
+		});
+ }
+ 
+//操作完成提示
+ function showMsg(msg){
+ 	$.blockUI({ 
+            message: msg, 
+            fadeIn: 300,
+            fadeOut: 500,
+            timeout: 800,
+            css:{
+            	border: 'none',
+            	fontSize: '16px',
+            	borderRadius: '5px',
+            	padding: '5px',
+            	fontWeight: 'bold'
+            }
+        }); 
+ }
+
+ //showModal(标题, 要显示的消息, 是否显示确定按钮)
+ function showModal(title, msg, isSave){
+ 	$('#save').unbind('click');//取消上一次操作的点击事件
+ 	$('#title').html(title);
+ 	$('.modal-body').html(msg).css({'height':'50px'});
+ 	$('.modal-dialog').css({'margin':'30px auto'});
+ 	$('.modal-content').css({'width':'600px'});
+ 	$('#myModal').modal('show').removeAttr('disabled');
+ 	if(isSave){
+ 		$('#save').show();
+ 	}else{
+ 		$('#save').hide();
+ 	}
+ 	$('#save').removeAttr('disabled');
+ }
+ 	
+ //showModalFrame(标题,iframe的src地址,iframe宽,iframe高, true开启：false隐藏确定按钮)
+ function showModalFrame(title, url, width, height, isSave){
+ 	/* $(".modal-dialog").draggable();//为模态对话框添加拖拽
+     $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动 */
+     $('#save').unbind('click');
+ 	$('#title').html(title);
+ 	$('#myModal').modal('show');
+ 	$('.modal-dialog').css({'marginLeft':370-(width-600)/2});
+ 	$('.modal-content').css({'width':width,'left':'130px'});
+ 	$('.modal-body').css({'height':height}).html('<iframe name="modalFrame" id="modalFrame" scrolling="yes" frameborder="0" style="width:100%;height:99%;"></iframe>');
+ 	$('#modalFrame').attr({'src':url});
+ 	if(isSave){
+ 		$('#save').show();
+ 	}else{
+ 		$('#save').hide();
+ 	}
+ 	$('#save').removeAttr('disabled');
  }
 </script>
+

@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>投票结果</title>
+			<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	</head>
+
+	<body>
+ <!--<div class="aui-tips aui-bg-warning aui-margin-b-15" id="tips-1">
+        <i class="aui-iconfont aui-icon-info"></i>
+        <div class="aui-tips-title">消息提示条消息提示条消息提示</div>
+        <i class="aui-iconfont aui-icon-close" tapmode="" onclick="closeTips()"></i>
+    </div>-->
+    
+       
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				<img src="../../image/demo2.png" style="width:1.5rem" class="aui-img-round" />
+				<!--<span class="aui-margin-l-5">AUI<span>555</span></span>-->
+				<div class="aui-info-item">55</div>
+				
+				
+			</div>
+			<div class="aui-info-item">2015-07-13 22:31</div>
+		</div>
+		<section id="voteTitle_1" class="aui-content-padded">
+			<h2>投票标题</h2>
+		</section>
+		
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+			<img src="../images/7059.JPG" width="100%" />
+			</div>
+		</div>
+
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list">
+				<li id="voteType_1" class="aui-list-header">
+					投票类型
+				</li>
+			<!-- 	<li id="voteType_1" class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div id="voteType_2" class="aui-list-item-title">类型</div>
+						<div id="voteTypeCount" class="aui-list-item-right">票数</div>
+					</div>
+				</li> -->
+				<!-- <li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">text</div>
+						<div class="aui-list-item-right">信息</div>
+					</div>
+				</li> -->
+
+			</ul>
+		</div>
+		<div class="aui-info aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				截止时间<span id="endDate_1" class="aui-margin-l-5">2015-07-13 22:31</span>
+			</div>
+		</div>
+
+		<div class="aui-info  aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item" id="acountUserInfo">
+			<!-- 	<img src="../../image/demo2.png" style="width:1.5rem" class="aui-img-round" />
+				<span class="aui-margin-l-5">已投票</span> -->
+			</div>
+		</div>
+
+	</body>
+    <script src="../../jslib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/aui/api.js"></script>
+	<script type="text/javascript" src="../js/aui/aui-skin.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			api.parseTapmode();
+		}
+		
+		$.ajax({
+			type:"POST",
+			url:'/wiesel-wechat/core/getVoteResultMsg',
+			data:{},
+			dataType:"json",
+		    success:function(data){
+					console.log(data);
+			    var votes = data.votes;
+				var voteType	= $(votes).prop('voteType');
+				var voteTitle	= $(votes).prop('voteTitle');
+				var endDate	= $(votes).prop('endDate');
+				$("#voteType_1").text(voteType);
+				$("#voteTitle_1").text(voteTitle);
+				$("#endDate_1").text(endDate);
+			//	$("#voteTitle").css({"font-size":"1rem","font-weight":"400"})
+
+				var voteItems = data.voteItems;
+				var len = voteItems.length;
+				var itemVal ="";
+				var itemId ="";
+				var count =0;
+				var j=0;//用于统计总票数用
+				for(var i=0;i<len;i++){
+					itemVal = $(voteItems[i]).prop('voteItem');
+					itemId = $(voteItems[i]).prop('itemId');
+				    count = $(data).prop(itemId);
+					j=j+count;
+					
+ 				$("#voteType_1").after('<li class="aui-list-item"><div class="aui-list-item-inner">'+
+						'<div class="aui-list-item-title">'+itemVal+'</div>'+
+						'<div class="aui-list-item-right">'+count+'票'+'</div>'+
+					'</div> </li>') 
+				}
+				
+				var text = "共"+j+"票";
+				$("#voteType_1").append(' <div id="voteCount">'+text+'</div>');
+			
+				
+				$("#acountUserInfo").text(data.nickname+" 已投票");
+			} 
+		});
+		
+	</script>
+
+</html>

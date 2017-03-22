@@ -78,4 +78,5 @@
 	<!-- 静态资源文件，不会被Spring MVC拦截 -->
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 	<mvc:resources mapping="/WEB-INF/**" location="/WEB-INF/"/> 
+	<mvc:resources mapping="/upload/**" location="/upload/"/> 
 </beans>

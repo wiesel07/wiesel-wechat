@@ -10,12 +10,12 @@
 	</head>
 
 	<body>
-		<div id="voteTips" class="aui-tips" id="tips-1">
+		<!-- <div id="voteTips" class="aui-tips" id="tips-1">
 			<div class="aui-tips-content aui-ellipsis-1">
 			     <i class="aui-iconfont aui-icon-info"></i>
 				<i class="aui-iconfont aui-icon-warnfill"></i>您还没有选择任何选项！
 			</div>
-	   </div>
+	   </div> -->
 	   
 	<!-- 	<div class="aui-content-padded">
 			<p>AUI 2.0新增了主题皮肤样式，开发者可以通过修改相关属性来自定义主题样式，该演示为测试演示，修改效果并不完全。</p>
@@ -69,7 +69,8 @@
 	<script type="text/javascript" src="../js/aui/api.js"></script>
 	<script type="text/javascript" src="../js/aui/aui-dialog.js" ></script>
 	<script type="text/javascript" src="../js/aui/aui-skin.js"></script>
-		<script type="text/javascript" src="../js/foundation.js"></script>
+	<script type="text/javascript" src="../js/aui/aui-toast.js" ></script>
+	<script type="text/javascript" src="../js/foundation.js"></script>
 
 	<script type="text/javascript">
 		apiready = function() {
@@ -78,9 +79,6 @@
 		var openId ="";
 		
 		var openId = GetQueryString("openId");
-		openId ='111222';
-		
-		$("#voteTips").hide();//初始化的时候隐藏消息提示框
 		
 		$.ajax({
 			type:"POST",
@@ -88,33 +86,35 @@
 			data:{},
 			dataType:"json",
 		    success:function(data){
-					console.log(data);
-			    var votes = data.votes[0];
-				var voteType	= $(votes).prop('voteType');
-				var voteTitle	= $(votes).prop('voteTitle');
-				var endDate	= $(votes).prop('endDate');
-				$("#voteType").text(voteType);
-				$("#voteTitle").text(voteTitle);
-				$("#endDate").text(endDate);
-			//	$("#voteTitle").css({"font-size":"1rem","font-weight":"400"})
-
-				var voteItems = data.voteItems;
-				var len = voteItems.length;
-				var itemVal ="";
-				var itemId ="";
-				for(var i=0;i<len;i++){
-					itemVal = $(voteItems[i]).prop('voteItem');
-					itemId = $(voteItems[i]).prop('itemId');
-					
- 					$("#voteType").after('<li class="aui-list-item"><div class="aui-list-item-inner">'+
-							'<div class="aui-list-item-title">'+itemVal.trim()+'</div>'+
-							'<div class="aui-list-item-right">'+
-														'<input id='+itemId.trim() +' type="checkbox" onclick="judgeCheckBox(this)" class="aui-radio">'
-													+'</div></div></li>')
-				}
 				
-				var openId = data.openId;
-				console.log(openId);
+		    	if(data.flag){
+		    		  var votes = data.votes;
+						var voteType	= $(votes).prop('voteType');
+						var voteTitle	= $(votes).prop('voteTitle');
+						var endDate	= $(votes).prop('endDate');
+						$("#voteType").text(voteType);
+						$("#voteTitle").text(voteTitle);
+						$("#endDate").text(endDate);
+					//	$("#voteTitle").css({"font-size":"1rem","font-weight":"400"})
+
+						var voteItems = data.voteItems;
+						var len = voteItems.length;
+						var itemVal ="";
+						var itemId ="";
+						for(var i=0;i<len;i++){
+							itemVal = $(voteItems[i]).prop('voteItem');
+							itemId = $(voteItems[i]).prop('itemId');
+							
+		 					$("#voteType").after('<li class="aui-list-item"><div class="aui-list-item-inner">'+
+									'<div class="aui-list-item-title">'+itemVal.trim()+'</div>'+
+									'<div class="aui-list-item-right">'+
+																'<input id='+itemId.trim() +' type="checkbox" onclick="judgeCheckBox(this)" class="aui-radio">'
+															+'</div></div></li>')
+						}
+		    	}else{
+		    		 location.href="voteResult.html";
+		    	}
+			  
 			} 
 		});
 		
@@ -162,11 +162,11 @@
 				}
 			}
 			if(flag ==len){
-				$("#voteTips").show();
-				setTimeout(function(){$("#voteTips").hide();},800);
+				
+				showDefault('fail');
+				return;
 			}
 			
-			console.log("in");
 			var data ={itemJson:itemJson};
 			$.ajax({
 				type:"POST",
@@ -175,14 +175,54 @@
 				dataType:"json",
 			    success:function(data){
 						console.log(data);
+						if (data.flag) {
+							 location.href="voteResult.html";
+						}
 				} 
 			});
 			console.log("投票")
 		}
 	
-		function closeTips(){
-			$api.remove($api.byId("tips-1"));
-		}
+		 var toast = new auiToast();
+		 function showDefault(type){
+		        switch (type) {
+		            case "success":
+		                toast.success({
+		                    title:"提交成功",
+		                    duration:2000
+		                });
+		                break;
+		            case "fail":
+		                toast.fail({
+		                    title:"您还没有选择任何选项！",
+		                    duration:2000
+		                });
+		                break;
+		            case "custom":
+		                toast.custom({
+		                    title:"提交成功",
+		                    html:'<i class="aui-iconfont aui-icon-laud"></i>',
+		                    duration:2000
+		                });
+		                break;
+		            case "loading":
+		                toast.loading({
+		                    title:"加载中",
+		                    duration:2000
+		                },function(ret){
+		                    console.log(ret);
+		                    setTimeout(function(){
+		                        toast.hide();
+		                    }, 3000)
+		                });
+		                break;
+		            default:
+		                // statements_def
+		                break;
+		        }
+		    }
+		
+		
 		
 	</script>
 
